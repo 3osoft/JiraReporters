@@ -104,7 +104,7 @@
     <Compile Include="Database\AttendanceModel.cs" />
     <Compile Include="JiraApi\CustomFieldsConverter.cs" />
     <Compile Include="JiraApi\DynamicJsonDeserializer.cs" />
-    <Compile Include="GSheets\GSheetUtils.cs" />
+    <Compile Include="GSheets\GSheet.cs" />
     <Compile Include="JiraApi\JiraApiClient.cs" />
     <Compile Include="JiraApi\JiraApiClientWithCache.cs" />
     <Compile Include="JiraApi\JiraDateTimeJsonConverter.cs" />
