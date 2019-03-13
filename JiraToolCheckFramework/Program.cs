@@ -31,13 +31,14 @@ namespace JiraToolCheckFramework
          DateTime till = DateTime.Now;
 
          JiraApiClient client = new JiraApiClient(config.JiraSettings);
-
-
+         
          var userGSheet = new UserSheet(config.GoogleSheetsSettings);
-         var users = userGSheet.GetUsers();
-         var userModels = users.Select(x => new UserModel {UserName = x});
+         var userModels = userGSheet.GetUsers();
+         var users = userModels.Select(x => x.UserName).ToList();
 
-         var allStatusAbsences = client.GetAbsences();
+         var initialsDictionary = userModels.ToDictionary(x => x.Initials, x => x.UserName);
+
+         var allStatusAbsences = client.GetAbsences(initialsDictionary);
          var absences = allStatusAbsences.Where(x => !absenceStatusesToBeIgnored.Contains(x.Status));
          var holidays = GetPublicHolidays(Enumerable.Range(2016, (till.Year - 2016) + 1).ToList(), config.PublicHolidayApiKey).Result;
 
@@ -46,7 +47,6 @@ namespace JiraToolCheckFramework
          var workLogs = GetWorklogs(users, client, from, till);
 
          var attendance = GetAttendances(users, absenceModels, workLogs, from, till);
-
 
          var timeGridSheet = new TimeGridSheet(config.GoogleSheetsSettings);
          timeGridSheet.WriteAttendance(attendance);

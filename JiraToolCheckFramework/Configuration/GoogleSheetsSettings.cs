@@ -6,5 +6,6 @@
       public string UserSheetName { get; set; }
       public int UserSheetRowsToSkip { get; set; }
       public int UserSheetLoginColumnIndex { get; set; }
+      public int UserSheetInitialsColumnIndex { get; set; }
    }
 }

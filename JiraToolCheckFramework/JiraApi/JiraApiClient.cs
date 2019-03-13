@@ -182,7 +182,7 @@ namespace JiraToolCheckFramework.JiraApi
          return restResponse.Data;
       }
 
-      public IEnumerable<Absence> GetAbsences()
+      public IEnumerable<Absence> GetAbsences(Dictionary<string, string> userNameInitialsDictionary)
       {
          var result = new List<Absence>();
          ConcurrentBag<dynamic> issuesJsons = new ConcurrentBag<dynamic>();
@@ -204,17 +204,17 @@ namespace JiraToolCheckFramework.JiraApi
          {
             foreach (var issue in item.issues)
             {
-               result.Add(AbsenceMapper.MapAbsence(issue));
+               result.Add(AbsenceMapper.MapAbsence(issue, userNameInitialsDictionary));
             }
          }
 
          return result;
       }
 
-      public IEnumerable<IEnumerable<object>> GetAbsenceMatrix()
+      public IEnumerable<IEnumerable<object>> GetAbsenceMatrix(Dictionary<string, string> userNameInitialsDictionary)
       {
          var result = new List<List<object>>();
-         var absences = GetAbsences();
+         var absences = GetAbsences(userNameInitialsDictionary);
 
          foreach (var item in absences)
          {

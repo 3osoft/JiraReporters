@@ -1,15 +1,16 @@
 {
-    "JiraSettings": {
-        "BaseUrl": "https://3osoft.atlassian.net/",
-        "Login": "<jira login>",
-        "Password": "<jira password>"
-    },
-    "GoogleSheetsSettings": {
-        "GoogleSheetId": "<google sheet id>",
-        "UserSheetName": "users",
-        "UserSheetRowsToSkip": 1,
-        "UserSheetLoginColumnIndex": 2
-    },
-    "PublicHolidayApiKey": "<api key for holiday api>",
-    "DateFrom": "2019-02-01T00:00:00"
+  "JiraSettings": {
+    "BaseUrl": "https://3osoft.atlassian.net/",
+    "Login": "<jira login>",
+    "Password": "<jira password>"
+  },
+  "GoogleSheetsSettings": {
+    "GoogleSheetId": "<google sheet id>",
+    "UserSheetName": "users",
+    "UserSheetRowsToSkip": 1,
+    "UserSheetLoginColumnIndex": 2,
+    "UserSheetInitialsColumnIndex": 3
+  },
+  "PublicHolidayApiKey": "<api key for holiday api>",
+  "DateFrom": "2019-02-01T00:00:00"
 }
