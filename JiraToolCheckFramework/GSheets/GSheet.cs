@@ -75,7 +75,6 @@ namespace JiraToolCheckFramework.GSheets
             request.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.OVERWRITE;
             request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
             var response = request.Execute();
-            SetConditionalFormatting();
          }
 
          public void ClearSheet(string sheetName)
@@ -86,6 +85,7 @@ namespace JiraToolCheckFramework.GSheets
             clearRequest.Execute();
          }
 
+         //TODO this metod only adds conditional formatting, there si also needed to implement delete conditional formatting method
          private void SetConditionalFormatting()
          {
             Spreadsheet spr = Service.Spreadsheets.Get(SheetId).Execute();
