@@ -99,6 +99,7 @@
     <Compile Include="JiraApi\Absence.cs" />
     <Compile Include="JiraApi\AbsenceCategory.cs" />
     <Compile Include="JiraApi\AbsenceDayHourEnum.cs" />
+    <Compile Include="JiraApi\AbsenceError.cs" />
     <Compile Include="JiraApi\AbsenceMapper.cs" />
     <Compile Include="Database\AbsenceModel.cs" />
     <Compile Include="Database\AttendanceModel.cs" />

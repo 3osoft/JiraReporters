@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -7,7 +8,7 @@ namespace JiraToolCheckFramework.JiraApi
 {
    internal static class AbsenceMapper
    {
-      public static Absence MapAbsence(dynamic item)
+      public static Absence MapAbsence(dynamic item, Dictionary<string, string> userNameInitialsDictionary)
       {
          var endDateField = CustomFieldsConverter.CustomFields[CustomFieldsConverter.CustomFieldsEnum.AbsEndDate];
          var startDateField = CustomFieldsConverter.CustomFields[CustomFieldsConverter.CustomFieldsEnum.AbsStartDate];
@@ -21,7 +22,7 @@ namespace JiraToolCheckFramework.JiraApi
             {
                IssueKey = item.key,
                Status = item.fields.status.name,
-               Name = NameVerification(item.fields.summary.ToString(), item.fields.creator.name.ToString()),
+               Name = NameVerification(item.fields.summary.ToString().Trim(), item.fields.creator.name.ToString().Trim(), userNameInitialsDictionary),
                CreatedDate = item.fields.created,
                StartDate = item.fields[startDateField],
                EndDate = item.fields[endDateField],
@@ -34,17 +35,35 @@ namespace JiraToolCheckFramework.JiraApi
          return null;
       }
 
-      private static string NameVerification(string summary, string creator)
+      private static string NameVerification(string summary, string creator, Dictionary<string, string> userNameInitialsDictionary)
       {
+         string result;
          if (creator != "removed")
          {
-            string summaryInitials = RemoveDiacritics(summary.Trim().Substring(0, 2));
-            string[] creatorInitialsArray = creator.Split('.');
-            string creatorInitials = RemoveDiacritics(creatorInitialsArray[0].Substring(0, 1) + creatorInitialsArray[1].Substring(0, 1));
+            //string trimmedSummary = summary.Trim();
+            if (!summary.Contains("-"))
+            {
+               result = "Error";
+            }
+            else
+            {
+               string summaryInitials = RemoveDiacritics(summary.Substring(0, summary.IndexOf("-", StringComparison.Ordinal))).Trim();
+               //string summaryInitials = RemoveDiacritics();
 
-            return summaryInitials.Equals(creatorInitials, StringComparison.CurrentCultureIgnoreCase) ? creator : "Error";
+               result = userNameInitialsDictionary.ContainsKey(summaryInitials) ? userNameInitialsDictionary[summaryInitials] : "Error";
+
+               //string[] creatorInitialsArray = creator.Split('.');
+               //string creatorInitials = RemoveDiacritics(creatorInitialsArray[0].Substring(0, 1) + creatorInitialsArray[1].Substring(0, 1));
+
+               //return summaryInitials.Equals(creatorInitials, StringComparison.CurrentCultureIgnoreCase) ? creator : "Error";
+            }
          }
-         return "REMOVED";
+         else
+         {
+            result = "REMOVED";
+         }
+
+         return result;
       }
 
       private static string RemoveDiacritics(string text)

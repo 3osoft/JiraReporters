@@ -49,6 +49,8 @@ namespace JiraToolCheckFramework.Database
       public static List<AbsenceModel> ToDatabaseModel(List<Absence> absences, List<PublicHoliday> holidays)
       {
          List<AbsenceModel> result = new List<AbsenceModel>();
+         List<AbsenceError> errors = new List<AbsenceError>();
+
          foreach (var absence in absences)
          {
             var totalAbsenceDuration = absence.DurationType == AbsenceDayHourEnum.Days
@@ -64,7 +66,12 @@ namespace JiraToolCheckFramework.Database
 
             if (isOneDayAbsence && totalAbsenceDuration > WorkDayHours)
             {
-               throw new Exception($"Absence {absence.IssueKey} is for the same day with duration {totalAbsenceDuration}");
+               errors.Add(new AbsenceError
+               {
+                  Absence = absence,
+                  AbsenceErrorType = AbsenceErrorType.OneDayWithDurationOverWorkday
+               });
+               //throw new Exception($"Absence {absence.IssueKey} is for the same day with duration {totalAbsenceDuration}");
             }
 
             bool hasPartialDayAtStart = false;
@@ -79,7 +86,14 @@ namespace JiraToolCheckFramework.Database
 
             if (hasPartialDayAtStart && hasPartialDayAtEnd)
             {
-               throw new Exception($"Absence {absence.IssueKey} has partial days at both start and end!");
+
+               errors.Add(new AbsenceError
+               {
+                  Absence = absence,
+                  AbsenceErrorType = AbsenceErrorType.PartialAtBothEnds
+               });
+
+               //throw new Exception($"Absence {absence.IssueKey} has partial days at both start and end!");
             }
             
             //todo check for halfday absences
@@ -92,7 +106,14 @@ namespace JiraToolCheckFramework.Database
 
                   if (remainingAbsenceDuration < 0)
                   {
-                     throw new Exception($"More than all hours were trying to be used in absence {absence.IssueKey}");
+
+                     errors.Add(new AbsenceError
+                     {
+                        Absence = absence,
+                        AbsenceErrorType = AbsenceErrorType.MoreHoursInCalendarThanInDuration
+                     });
+
+                     //throw new Exception($"More than all hours were trying to be used in absence {absence.IssueKey}");
                   }
 
                   if (hasPartialDayAtStart && currentDay == absence.StartDate.Date)
@@ -127,9 +148,20 @@ namespace JiraToolCheckFramework.Database
             }
             if (remainingAbsenceDuration != 0)
             {
-               throw new Exception($"Not all hours from absence {absence.IssueKey} were used");
+               errors.Add(new AbsenceError
+               {
+                  Absence = absence,
+                  AbsenceErrorType = AbsenceErrorType.UnusedOrNoRemainingDuration
+               });
+
+               //throw new Exception($"Not all hours from absence {absence.IssueKey} were used");
             }
          }
+
+         var errorString = string.Join(Environment.NewLine,
+            errors.Select(x => $"{x.Absence.IssueKey} {x.AbsenceErrorType}"));
+
+         Console.WriteLine(errorString);
 
          return result;
       }
