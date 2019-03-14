@@ -159,6 +159,7 @@ namespace JiraToolCheckFramework
 
       private static async Task<List<PublicHoliday>> GetPublicHolidays(List<int> years, string apiKey)
       {
+         string publicHolidayType = "National holiday";
          List<PublicHoliday> result = new List<PublicHoliday>();
          RestClient restClient = new RestClient(new Uri("https://calendarific.com/api/v2/"));
          restClient.AddHandler("application/json", new DynamicJsonDeserializer());
@@ -183,11 +184,17 @@ namespace JiraToolCheckFramework
             foreach (var holiday in holidaysResponseData.response.holidays)
             { // todo type musi obsahovat National holiday
                var datetime = holiday.date.datetime;
-               result.Add(new PublicHoliday
+
+               string[] types = holiday.type.ToObject<string[]>();
+
+               if (types.Contains(publicHolidayType))
                {
-                  Date = new DateTime((int) datetime.year, (int) datetime.month, (int)datetime.day),
-                  Name = holiday.name
-               });
+                  result.Add(new PublicHoliday
+                  {
+                     Date = new DateTime((int)datetime.year, (int)datetime.month, (int)datetime.day),
+                     Name = holiday.name
+                  });
+               }
             }
 
             //API limitation
