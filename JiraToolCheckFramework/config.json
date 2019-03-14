@@ -1,16 +1,29 @@
 {
   "JiraSettings": {
     "BaseUrl": "https://3osoft.atlassian.net/",
-    "Login": "<jira login>",
-    "Password": "<jira password>"
+    "Login": "<user.name>",
+    "Password": "<password>"
   },
-  "GoogleSheetsSettings": {
-    "GoogleSheetId": "<google sheet id>",
-    "UserSheetName": "users",
-    "UserSheetRowsToSkip": 1,
-    "UserSheetLoginColumnIndex": 2,
-    "UserSheetInitialsColumnIndex": 3
+
+  "UsersSheetSettings": {
+    "GoogleSheetId": "1LxURSw6X2Qgkyn_6l7qE9q0Vhnj5O-N5wjmixV1Wbeo",
+    "SheetName": "Raw Data"
   },
-  "PublicHolidayApiKey": "<api key for holiday api>",
-  "DateFrom": "2019-02-01T00:00:00"
+
+  "AttendanceGridSheetSettings": {
+    "GoogleSheetId": "1DB_Kt0-BXPgOKmCRSqtjYTO-45GYe56jwGkpypKAwUg",
+    "SheetName": "Dochadzka"
+  },
+
+  "ProjectTimeSpentSheetSettings": {
+    "GoogleSheetId": "1DB_Kt0-BXPgOKmCRSqtjYTO-45GYe56jwGkpypKAwUg",
+    "SheetName": "ProjectTimeSpent"
+  },
+
+  "RunLogSheetSettings": {
+    "GoogleSheetId": "1DB_Kt0-BXPgOKmCRSqtjYTO-45GYe56jwGkpypKAwUg",
+    "SheetName": "ToolRunLog"
+  },
+
+  "PublicHolidayApiKey": "<ApiKey>"
 }

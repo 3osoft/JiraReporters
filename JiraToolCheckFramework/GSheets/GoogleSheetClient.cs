@@ -12,7 +12,7 @@ namespace JiraToolCheckFramework.GSheets
 {
    namespace FinanceSimulator.Utilities
    {
-      public class GSheet
+      public class GoogleSheetClient
       {
          static string[] Scopes = { SheetsService.Scope.Spreadsheets };
          static string ApplicationName = "JiraWorklogTool";
@@ -29,7 +29,7 @@ namespace JiraToolCheckFramework.GSheets
 
          public string SheetId { get; }
 
-         public GSheet(string sheetId)
+         public GoogleSheetClient(string sheetId)
          {
             SheetId = sheetId;
          }

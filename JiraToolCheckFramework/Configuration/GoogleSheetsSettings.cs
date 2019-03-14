@@ -3,9 +3,6 @@
    public class GoogleSheetsSettings
    {
       public string GoogleSheetId { get; set; }
-      public string UserSheetName { get; set; }
-      public int UserSheetRowsToSkip { get; set; }
-      public int UserSheetLoginColumnIndex { get; set; }
-      public int UserSheetInitialsColumnIndex { get; set; }
+      public string SheetName { get; set; }
    }
 }

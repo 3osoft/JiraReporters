@@ -1,36 +1,28 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using JiraToolCheckFramework.Configuration;
 using JiraToolCheckFramework.Database;
-using JiraToolCheckFramework.GSheets.FinanceSimulator.Utilities;
 
 namespace JiraToolCheckFramework.GSheets
 {
-   public class TimeGridSheet
+   public class AttendanceGridSheet : GoogleSheet
    {
-      private readonly GSheet _timeGridGSheet;
-      private readonly GoogleSheetsSettings _settings;
+      private const string UsersColumnHeader = "Users";
 
-      public TimeGridSheet(GoogleSheetsSettings settings)
+      public AttendanceGridSheet(GoogleSheetsSettings settings) : base(settings)
       {
-         _settings = settings;
-         _timeGridGSheet = new GSheet(_settings.GoogleSheetId);
       }
 
       public void WriteAttendance(List<AttendanceModel> attendances)
       {
-         _timeGridGSheet.ClearSheet("attendance");
-         //_timeGridGSheet.DeleteAllRowsAndColumns("attendance");
+         _client.ClearSheet(_settings.SheetName);
 
          var availableDates = attendances.Select(x => x.Date).Distinct().OrderBy(x => x).ToList();
-
          var groupedAttendances = attendances.OrderBy(x => x.Date).GroupBy(x => x.User);
-
          var resultData = new List<IList<object>>();
-
-
-         List<object> headerFirstRow = new List<object> {"Users"};
-         headerFirstRow.AddRange(availableDates.Select(x => x.ToShortDateString()));
+         List<object> headerFirstRow = new List<object> { UsersColumnHeader };
+         headerFirstRow.AddRange(availableDates.Select(x => x.ToString("MM/dd/yyyy")));
 
          List<object> headerSecondRow = new List<object> {""};
          headerSecondRow.AddRange(availableDates.Select(x => x.DayOfWeek.ToString()));
@@ -41,13 +33,12 @@ namespace JiraToolCheckFramework.GSheets
          foreach (var groupedAttendance in groupedAttendances)
          {
             var newRow = new List<object> {groupedAttendance.Key};
-            newRow.AddRange(groupedAttendance.OrderBy(x => x.Date).Select(x => $"={x.HoursWorked}+{x.AbsenceTotal}"));
+            newRow.AddRange(groupedAttendance.OrderBy(x => x.Date).Select(x => $"={x.HoursWorked.ToString(CultureInfo.GetCultureInfo("en-US"))}+{x.AbsenceTotal.ToString(CultureInfo.GetCultureInfo("en-US"))}"));
 
             resultData.Add(newRow);
          }
 
-
-         _timeGridGSheet.WriteToSheet("attendance", resultData);
+         _client.WriteToSheet(_settings.SheetName, resultData);
       }
    }
 }

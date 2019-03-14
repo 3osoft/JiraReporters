@@ -96,8 +96,6 @@ namespace JiraToolCheckFramework.Database
                //throw new Exception($"Absence {absence.IssueKey} has partial days at both start and end!");
             }
             
-            //todo check for halfday absences
-
             foreach (var currentDay in DateTimeUtils.EachDay(absence.StartDate.Date, absence.EndDate.Date))
             {
                if (currentDay.DayOfWeek != DayOfWeek.Saturday && currentDay.DayOfWeek != DayOfWeek.Sunday && !holidays.Select(x => x.Date).Contains(currentDay))

@@ -2,28 +2,26 @@
 using System.Linq;
 using JiraToolCheckFramework.Configuration;
 using JiraToolCheckFramework.Database;
-using JiraToolCheckFramework.GSheets.FinanceSimulator.Utilities;
 
 namespace JiraToolCheckFramework.GSheets
 {
-   public class UserSheet
+   public class UserSheet : GoogleSheet
    {
-      private readonly GSheet _userGSheet;
-      private readonly GoogleSheetsSettings _settings;
+      private const int UserSheetRowsToSkip = 1;
+      private const int UserSheetLoginColumnIndex = 1;
+      private const int UserSheetInitialsColumnIndex = 2;
 
-      public UserSheet(GoogleSheetsSettings settings)
+      public UserSheet(GoogleSheetsSettings settings) : base(settings)
       {
-         _settings = settings;
-         _userGSheet = new GSheet(_settings.GoogleSheetId);
       }
 
       public List<UserModel> GetUsers()
       {
-         IList<IList<object>> userSheetData = _userGSheet.GetSheetData(_settings.UserSheetName);
-         var users = userSheetData.Skip(_settings.UserSheetRowsToSkip).Select(x => new UserModel
+         IList<IList<object>> userSheetData = _client.GetSheetData(_settings.SheetName);
+         var users = userSheetData.Skip(UserSheetRowsToSkip).Select(x => new UserModel
          {
-            UserName = (string) x[_settings.UserSheetLoginColumnIndex],
-            Initials = (string) x[_settings.UserSheetInitialsColumnIndex]
+            UserName = (string) x[UserSheetLoginColumnIndex],
+            Initials = (string) x[UserSheetInitialsColumnIndex]
          }).ToList();
          return users;
       }

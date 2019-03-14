@@ -94,7 +94,10 @@
   <ItemGroup>
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\GoogleSheetsSettings.cs" />
-    <Compile Include="GSheets\TimeGridSheet.cs" />
+    <Compile Include="GSheets\GoogleSheet.cs" />
+    <Compile Include="GSheets\ProjectTimeSpentSheet.cs" />
+    <Compile Include="GSheets\AttendanceGridSheet.cs" />
+    <Compile Include="GSheets\RunLogSheet.cs" />
     <Compile Include="GSheets\UserSheet.cs" />
     <Compile Include="JiraApi\Absence.cs" />
     <Compile Include="JiraApi\AbsenceCategory.cs" />
@@ -105,7 +108,7 @@
     <Compile Include="Database\AttendanceModel.cs" />
     <Compile Include="JiraApi\CustomFieldsConverter.cs" />
     <Compile Include="JiraApi\DynamicJsonDeserializer.cs" />
-    <Compile Include="GSheets\GSheet.cs" />
+    <Compile Include="GSheets\GoogleSheetClient.cs" />
     <Compile Include="JiraApi\JiraApiClient.cs" />
     <Compile Include="JiraApi\JiraApiClientWithCache.cs" />
     <Compile Include="JiraApi\JiraDateTimeJsonConverter.cs" />

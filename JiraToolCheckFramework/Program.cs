@@ -26,21 +26,28 @@ namespace JiraToolCheckFramework
             "Canceled",
             "Rejected"
          };
+
+         DateTime runStartDateTime = DateTime.Now;
          
-         DateTime from = config.DateFrom;
-         DateTime till = DateTime.Now;
+         DateTime from = config.DateFrom ?? new DateTime(DateTime.Now.Year, 1, 1) ;
+         DateTime till = config.DateTo ?? new DateTime(DateTime.Now.Year, 12, 31);
 
          JiraApiClient client = new JiraApiClient(config.JiraSettings);
-         
-         var userGSheet = new UserSheet(config.GoogleSheetsSettings);
+
+         var userGSheet = new UserSheet(config.UsersSheetSettings);
          var userModels = userGSheet.GetUsers();
          var users = userModels.Select(x => x.UserName).ToList();
+
+         var burnedDictionary = CalculateBudgetBurned(users, client);
+
+         var budgetBurnedSheet = new ProjectTimeSpentSheet(config.ProjectTimeSpentSheetSettings);
+         budgetBurnedSheet.WriteBudgetBurned(burnedDictionary);
 
          var initialsDictionary = userModels.ToDictionary(x => x.Initials, x => x.UserName);
 
          var allStatusAbsences = client.GetAbsences(initialsDictionary);
          var absences = allStatusAbsences.Where(x => !absenceStatusesToBeIgnored.Contains(x.Status));
-         var holidays = GetPublicHolidays(Enumerable.Range(2016, (till.Year - 2016) + 1).ToList(), config.PublicHolidayApiKey).Result;
+         var holidays = GetPublicHolidays(Enumerable.Range(2016, till.Year - 2016 + 1).ToList(), config.PublicHolidayApiKey).Result;
 
          var absenceModels = AbsenceModel.ToDatabaseModel(absences.ToList(), holidays);
 
@@ -48,7 +55,7 @@ namespace JiraToolCheckFramework
 
          var attendance = GetAttendances(users, absenceModels, workLogs, from, till);
 
-         var timeGridSheet = new TimeGridSheet(config.GoogleSheetsSettings);
+         var timeGridSheet = new AttendanceGridSheet(config.AttendanceGridSheetSettings);
          timeGridSheet.WriteAttendance(attendance);
 
          System.Data.Entity.Database.SetInitializer(new DropCreateDatabaseIfModelChanges<JiraToolDbContext>());
@@ -66,6 +73,25 @@ namespace JiraToolCheckFramework
                transaction.Commit();
             }
          }
+
+         DateTime runEndDateTime = DateTime.Now;
+
+         var runLogSheet = new RunLogSheet(config.RunLogSheetSettings);
+
+         runLogSheet.WriteLog(runStartDateTime, runEndDateTime);
+      }
+
+      private static Dictionary<string, decimal> CalculateBudgetBurned(List<string> users, JiraApiClient client)
+      {
+         Dictionary<string, decimal> burnedPerProject = new Dictionary<string, decimal>();
+         var worklogsForBudgetBurned = GetWorklogs(users, client, new DateTime(2016, 1, 1), DateTime.Now);
+
+         foreach (var worklogModels in worklogsForBudgetBurned.GroupBy(x => x.ProjectKey))
+         {
+            burnedPerProject.Add(worklogModels.Key, worklogModels.Sum(x => x.Hours));
+         }
+
+         return burnedPerProject;
       }
 
       private static async Task<List<PublicHoliday>> GetPublicHolidays(List<int> years, string apiKey)
