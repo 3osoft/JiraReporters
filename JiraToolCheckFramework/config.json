@@ -6,8 +6,8 @@
   },
 
   "UsersSheetSettings": {
-    "GoogleSheetId": "1LxURSw6X2Qgkyn_6l7qE9q0Vhnj5O-N5wjmixV1Wbeo",
-    "SheetName": "Raw Data"
+    "GoogleSheetId": "1amMScro4mHX3lATkUwagYm0kw0kxlBwB9mN28bW0Jq8",
+    "SheetName": "RawData"
   },
 
   "AttendanceGridSheetSettings": {
@@ -25,5 +25,10 @@
     "SheetName": "ToolRunLog"
   },
 
-  "PublicHolidayApiKey": "<ApiKey>"
+  "SinnersSheetSettings": {
+    "GoogleSheetId": "1DB_Kt0-BXPgOKmCRSqtjYTO-45GYe56jwGkpypKAwUg",
+    "SheetName": "Sinners"
+  },
+
+  "PublicHolidayApiKey": "<APi key>"
 }

@@ -10,6 +10,7 @@ namespace JiraToolCheckFramework.Configuration
       public GoogleSheetsSettings AttendanceGridSheetSettings { get; set; }
       public GoogleSheetsSettings ProjectTimeSpentSheetSettings { get; set; }
       public GoogleSheetsSettings RunLogSheetSettings { get; set; }
+      public GoogleSheetsSettings SinnersSheetSettings { get; set; }
       public string PublicHolidayApiKey { get; set; }
       public DateTime? DateFrom { get; set; }
       public DateTime? DateTo { get; set; }

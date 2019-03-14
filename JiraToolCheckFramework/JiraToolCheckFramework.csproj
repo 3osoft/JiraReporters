@@ -98,6 +98,7 @@
     <Compile Include="GSheets\ProjectTimeSpentSheet.cs" />
     <Compile Include="GSheets\AttendanceGridSheet.cs" />
     <Compile Include="GSheets\RunLogSheet.cs" />
+    <Compile Include="GSheets\SinnersSheet.cs" />
     <Compile Include="GSheets\UserSheet.cs" />
     <Compile Include="JiraApi\Absence.cs" />
     <Compile Include="JiraApi\AbsenceCategory.cs" />
@@ -127,6 +128,10 @@
     <Compile Include="Database\JiraToolDbContext.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sin\LongWorklogSinner.cs" />
+    <Compile Include="Sin\Sinner.cs" />
+    <Compile Include="Sin\TimeTrackedSinner.cs" />
+    <Compile Include="Sin\WorklogCountSinner.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
   </ItemGroup>
   <ItemGroup>

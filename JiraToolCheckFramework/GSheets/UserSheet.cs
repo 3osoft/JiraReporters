@@ -10,6 +10,7 @@ namespace JiraToolCheckFramework.GSheets
       private const int UserSheetRowsToSkip = 1;
       private const int UserSheetLoginColumnIndex = 1;
       private const int UserSheetInitialsColumnIndex = 2;
+      private const int UserIsTrackingColumnIndex = 5;
 
       public UserSheet(GoogleSheetsSettings settings) : base(settings)
       {
@@ -21,7 +22,8 @@ namespace JiraToolCheckFramework.GSheets
          var users = userSheetData.Skip(UserSheetRowsToSkip).Select(x => new UserModel
          {
             UserName = (string) x[UserSheetLoginColumnIndex],
-            Initials = (string) x[UserSheetInitialsColumnIndex]
+            Initials = (string) x[UserSheetInitialsColumnIndex],
+            IsTracking = int.Parse((string) x[UserIsTrackingColumnIndex]) == 1
          }).ToList();
          return users;
       }

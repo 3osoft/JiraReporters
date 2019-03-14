@@ -8,6 +8,7 @@ using JiraToolCheckFramework.Configuration;
 using JiraToolCheckFramework.Database;
 using JiraToolCheckFramework.GSheets;
 using JiraToolCheckFramework.JiraApi;
+using JiraToolCheckFramework.Sin;
 using JiraToolCheckFramework.Utils;
 using Newtonsoft.Json;
 using RestSharp;
@@ -74,11 +75,73 @@ namespace JiraToolCheckFramework
             }
          }
 
+         ResolveSinners(userModels, absenceModels, workLogs, attendance, config);
+         
          DateTime runEndDateTime = DateTime.Now;
 
          var runLogSheet = new RunLogSheet(config.RunLogSheetSettings);
 
          runLogSheet.WriteLog(runStartDateTime, runEndDateTime);
+      }
+
+      private static void ResolveSinners(List<UserModel> userModels, List<AbsenceModel> absenceModels,
+         List<WorklogModel> workLogs,
+         List<AttendanceModel> attendance, Config config)
+      {
+         var dateOfSin = DateTime.Today.Subtract(TimeSpan.FromDays(1)).Date;
+
+         var worklogCountSinners = userModels.Join(absenceModels, u => u.UserName, a => a.UserName, (u, a) => new
+            {
+               u.UserName,
+               u.IsTracking,
+               a.Date,
+               a.Hours
+            })
+            .Where(ua => ua.Date.Equals(dateOfSin) && ua.IsTracking)
+            .GroupBy(ua => ua.UserName)
+            .Select(gua =>
+               new WorklogCountSinner
+               {
+                  TotalHours = gua.Sum(x => x.Hours),
+                  WorklogCount = gua.Count(),
+                  SinDate = dateOfSin,
+                  SinnerLogin = gua.Key
+               })
+            .Where(wcs => wcs.WorklogCount < WorklogCountSinner.CountThreshold);
+
+         var longWorklogSinners = workLogs
+            .Where(x => x.Date.Equals(dateOfSin) && x.Hours > LongWorklogSinner.LongWorklogThreshold)
+            .Join(userModels, w => w.User, u => u.UserName, (w, u) => new {w.Hours, w.User, u.IsTracking})
+            .Where(x => x.IsTracking)
+            .Select(x => new LongWorklogSinner
+            {
+               SinnerLogin = x.User,
+               Hours = x.Hours,
+               SinDate = dateOfSin
+            });
+
+         var timeTrackedSinners = attendance
+            .Where(x => x.Date.Equals(dateOfSin) && (x.TotalHours < TimeTrackedSinner.LowHoursThreshold ||
+                                                     x.TotalHours > TimeTrackedSinner.HighHoursThreshold))
+            .Join(userModels, a => a.User, u => u.UserName,
+               (a, u) => new {a.User, a.AbsenceTotal, a.TotalHours, a.HoursWorked, u.IsTracking})
+            .Where(x => x.IsTracking)
+            .Select(x => new TimeTrackedSinner
+            {
+               SinnerLogin = x.User,
+               Absence = x.AbsenceTotal,
+               TotalHours = x.TotalHours,
+               TimeTracked = x.HoursWorked,
+               SinDate = dateOfSin
+            });
+
+         var sinnerSheet = new SinnersSheet(config.SinnersSheetSettings);
+         sinnerSheet.WriteSinners(new List<IEnumerable<Sinner>>
+         {
+            longWorklogSinners,
+            timeTrackedSinners,
+            worklogCountSinners
+         });
       }
 
       private static Dictionary<string, decimal> CalculateBudgetBurned(List<string> users, JiraApiClient client)
@@ -118,7 +181,7 @@ namespace JiraToolCheckFramework
             var holidaysResponseData = restResponse.Data;
 
             foreach (var holiday in holidaysResponseData.response.holidays)
-            {
+            { // todo type musi obsahovat National holiday
                var datetime = holiday.date.datetime;
                result.Add(new PublicHoliday
                {
