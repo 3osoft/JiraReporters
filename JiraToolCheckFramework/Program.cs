@@ -20,9 +20,17 @@ namespace JiraToolCheckFramework
 {
    class Program
    {
+      private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
       public const string ConfigFilePath = "config.json";
       static void Main(string[] args)
       {
+         AppDomain.CurrentDomain.UnhandledException += (sender, eventArgs) =>
+         {
+            logger.Fatal(eventArgs.ExceptionObject as Exception);
+         };
+
+         logger.Info("Tool run started");
          Config config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(ConfigFilePath));
 
          List<string> absenceStatusesToBeIgnored = new List<string>
@@ -36,12 +44,17 @@ namespace JiraToolCheckFramework
          DateTime from = config.DateFrom ?? new DateTime(DateTime.Now.Year, 1, 1) ;
          DateTime till = config.DateTo ?? new DateTime(DateTime.Now.Year, 12, 31);
 
+         logger.Info("Running for date range from {0} to {1}", from, till);
+
          JiraApiClient client = new JiraApiClient(config.JiraSettings);
 
+         logger.Info("Getting users");
          var userGSheet = new UserSheet(config.UsersSheetSettings);
          var userModels = userGSheet.GetUsers();
          var users = userModels.Select(x => x.UserName).ToList();
+         logger.Info("Found {0} users", users.Count);
 
+         logger.Info("Calculating Time spent on projects");
          var burnedDictionary = CalculateBudgetBurned(users, client);
 
          var budgetBurnedSheet = new ProjectTimeSpentSheet(config.ProjectTimeSpentSheetSettings);
@@ -49,21 +62,27 @@ namespace JiraToolCheckFramework
 
          var initialsDictionary = userModels.ToDictionary(x => x.Initials, x => x.UserName);
 
+         logger.Info("Getting absences");
          var allStatusAbsences = client.GetAbsences(initialsDictionary);
+         
          var absences = allStatusAbsences.Where(x => !absenceStatusesToBeIgnored.Contains(x.Status));
+         logger.Info("Found {0} absences in all status, {1} in usable status", allStatusAbsences.Count(), absences.Count());
+         logger.Info("Getting public holidays");
          var holidays = GetPublicHolidays(Enumerable.Range(2016, till.Year - 2016 + 1).ToList(), config.PublicHolidayApiKey).Result;
 
          var absenceModels = AbsenceModel.ToDatabaseModel(absences.ToList(), holidays);
 
+         logger.Info("Getting worklogs");
          var workLogs = GetWorklogs(users, client, from, till);
-
+         logger.Info("Calculating attencande");
          var attendance = GetAttendances(users, absenceModels, workLogs, from, till);
 
+         logger.Info("Writing to time grid sheet");
          var timeGridSheet = new AttendanceGridSheet(config.AttendanceGridSheetSettings);
          timeGridSheet.WriteAttendance(attendance);
 
+         logger.Info("Cleaning and filling database");
          System.Data.Entity.Database.SetInitializer(new DropCreateDatabaseIfModelChanges<JiraToolDbContext>());
-
          using (JiraToolDbContext ctx = new JiraToolDbContext())
          {
             using (var transaction = ctx.Database.BeginTransaction())
@@ -78,13 +97,15 @@ namespace JiraToolCheckFramework
             }
          }
 
+         logger.Info("Resolving sinners");
          ResolveSinners(userModels, workLogs, attendance, config);
 
          DateTime runEndDateTime = DateTime.Now;
 
          var runLogSheet = new RunLogSheet(config.RunLogSheetSettings);
-
+         logger.Info("Writng run log");
          runLogSheet.WriteLog(runStartDateTime, runEndDateTime);
+         logger.Info("Tool run finished");
       }
 
       private static void ResolveSinners(List<UserModel> userModels,

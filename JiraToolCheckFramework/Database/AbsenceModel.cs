@@ -9,6 +9,8 @@ namespace JiraToolCheckFramework.Database
 {
    public class AbsenceModel
    {
+      private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
       private const int WorkDayHours = 8;
 
       [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -156,11 +158,15 @@ namespace JiraToolCheckFramework.Database
             }
          }
 
-         var errorString = string.Join(Environment.NewLine,
-            errors.Select(x => $"{x.Absence.IssueKey} {x.AbsenceErrorType}"));
+         if (errors.Any())
+         {
+            var errorString = string.Join(Environment.NewLine,
+               errors.Select(x => $"{x.Absence.IssueKey} {x.AbsenceErrorType}"));
 
-         Console.WriteLine(errorString);
-
+            logger.Warn("Found {0} errors in absences!", errors.Count);
+            logger.Warn(errorString);
+         }
+         
          return result;
       }
    }
