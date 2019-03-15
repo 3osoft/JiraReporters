@@ -18,8 +18,8 @@ namespace JiraToolCheckFramework.GSheets
          static string ApplicationName = "JiraWorklogTool";
          const string ALL_COLUMNS_RANGE = "A:ZZZ";
          private const string SHEET_START_RANGE = "A:A";
-         private const string GOOGLE_API_CREDENTIALS_PATH = "credentials.json";
-         private const string GOOGLE_API_TOKEN_NAME = "token.json";
+         private const string GOOGLE_API_CREDENTIALS_PATH = "credentials_gmail.json";
+         private const string GOOGLE_API_TOKEN_NAME = "token_sheets.json";
          private const string InterpolationTypeNumber = "Number";
          private readonly Color _redColor = new Color { Red = 1 };
          private readonly Color _greenColor = new Color { Green = 1 };

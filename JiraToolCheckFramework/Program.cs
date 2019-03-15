@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
+using System.Text;
 using System.Threading.Tasks;
 using JiraToolCheckFramework.Configuration;
 using JiraToolCheckFramework.Database;
+using JiraToolCheckFramework.Gmail;
 using JiraToolCheckFramework.GSheets;
 using JiraToolCheckFramework.JiraApi;
 using JiraToolCheckFramework.Sin;
@@ -75,8 +78,8 @@ namespace JiraToolCheckFramework
             }
          }
 
-         ResolveSinners(userModels, absenceModels, workLogs, attendance, config);
-         
+         ResolveSinners(userModels, workLogs, attendance, config);
+
          DateTime runEndDateTime = DateTime.Now;
 
          var runLogSheet = new RunLogSheet(config.RunLogSheetSettings);
@@ -84,28 +87,28 @@ namespace JiraToolCheckFramework
          runLogSheet.WriteLog(runStartDateTime, runEndDateTime);
       }
 
-      private static void ResolveSinners(List<UserModel> userModels, List<AbsenceModel> absenceModels,
+      private static void ResolveSinners(List<UserModel> userModels,
          List<WorklogModel> workLogs,
          List<AttendanceModel> attendance, Config config)
       {
          var dateOfSin = DateTime.Today.Subtract(TimeSpan.FromDays(1)).Date;
 
-         var worklogCountSinners = userModels.Join(absenceModels, u => u.UserName, a => a.UserName, (u, a) => new
+         var worklogCountSinners = userModels.Join(workLogs, u => u.UserName, w => w.User, (u, w) => new
             {
                u.UserName,
                u.IsTracking,
-               a.Date,
-               a.Hours
+               w.Date,
+               w.Hours
             })
-            .Where(ua => ua.Date.Equals(dateOfSin) && ua.IsTracking)
-            .GroupBy(ua => ua.UserName)
-            .Select(gua =>
+            .Where(uw => uw.Date.Equals(dateOfSin) && uw.IsTracking)
+            .GroupBy(uw => uw.UserName)
+            .Select(guw =>
                new WorklogCountSinner
                {
-                  TotalHours = gua.Sum(x => x.Hours),
-                  WorklogCount = gua.Count(),
+                  TotalHours = guw.Sum(x => x.Hours),
+                  WorklogCount = guw.Count(),
                   SinDate = dateOfSin,
-                  SinnerLogin = gua.Key
+                  SinnerLogin = guw.Key
                })
             .Where(wcs => wcs.WorklogCount < WorklogCountSinner.CountThreshold);
 
@@ -135,13 +138,73 @@ namespace JiraToolCheckFramework
                SinDate = dateOfSin
             });
 
-         var sinnerSheet = new SinnersSheet(config.SinnersSheetSettings);
-         sinnerSheet.WriteSinners(new List<IEnumerable<Sinner>>
+         var sinners = new List<IEnumerable<Sinner>>
          {
             longWorklogSinners,
             timeTrackedSinners,
             worklogCountSinners
-         });
+         };
+
+         var sinnerSheet = new SinnersSheet(config.SinnersSheetSettings);
+         sinnerSheet.WriteSinners(sinners);
+
+         SendMailForSinners(sinners, config.SinnerNotifierGmailSettings, dateOfSin);
+
+      }
+
+      private static void SendMailForSinners(List<IEnumerable<Sinner>> sinners, GmailSettings settings, DateTime dateOfSin)
+      {
+         var fromAddress = new MailAddress(settings.FromAddress, settings.FromDisplayName);
+         var toAddress = new MailAddress(settings.ToAddress, settings.ToDisplayName);
+         string subject = $"Sinners for {dateOfSin.Date:d}";
+         string body = GetMailBodyForSinners(sinners);
+
+         using (var message = new MailMessage(fromAddress, toAddress)
+         {
+            Subject = subject,
+            Body = body,
+            ReplyToList = { fromAddress.Address },
+            IsBodyHtml = true
+         })
+         {
+            GmailClient client = new GmailClient();
+            client.SendMail(message);
+         }
+      }
+
+      private static string GetMailBodyForSinners(List<IEnumerable<Sinner>> sinners)
+      {
+         StringBuilder resultBuilder = new StringBuilder();
+
+         if (sinners.Any(x => x.Any()))
+         {
+            foreach (var oneCategorySinner in sinners)
+            {
+               var oneCategorySinnerList = oneCategorySinner.ToList();
+               if (oneCategorySinnerList.Any())
+               {
+                  resultBuilder.AppendLine("<b>");
+                  resultBuilder.AppendLine($"Ludia, ktory maju {oneCategorySinnerList.First().SinString}: ");
+                  resultBuilder.AppendLine("</b>");
+                  resultBuilder.AppendLine("<br>");
+                  foreach (var sinner in oneCategorySinnerList)
+                  {
+                     resultBuilder.AppendLine(sinner.ToMailString());
+                     resultBuilder.AppendLine("<br>");
+                  }
+                  resultBuilder.AppendLine("<br>");
+               }
+            }
+         }
+         else
+         {
+            resultBuilder.Append("No sinners!");
+            //todo add a meme
+            //todo maybe count consecutive days
+         }
+
+         return resultBuilder.ToString();
+
       }
 
       private static Dictionary<string, decimal> CalculateBudgetBurned(List<string> users, JiraApiClient client)
@@ -182,7 +245,7 @@ namespace JiraToolCheckFramework
             var holidaysResponseData = restResponse.Data;
 
             foreach (var holiday in holidaysResponseData.response.holidays)
-            { // todo type musi obsahovat National holiday
+            {
                var datetime = holiday.date.datetime;
 
                string[] types = holiday.type.ToObject<string[]>();

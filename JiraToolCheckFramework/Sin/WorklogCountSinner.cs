@@ -17,8 +17,13 @@ namespace JiraToolCheckFramework.Sin
             SinnerLogin,
             SinString,
             WorklogCount,
-            TotalHours
+            $"{TotalHours:F2}h"
          };
+      }
+
+      public override string ToMailString()
+      {
+         return $"{SinnerLogin} - {WorklogCount}, {TotalHours:F2}h";
       }
    }
 }

@@ -1,8 +1,15 @@
 {
   "JiraSettings": {
     "BaseUrl": "https://3osoft.atlassian.net/",
-    "Login": "<user.name>",
+    "Login": "<login>",
     "Password": "<password>"
+  },
+
+  "SinnerNotifierGmailSettings": {
+    "FromAddress": "adam.blasko@3osoft.com",
+    "FromDisplayName": "Adam Blasko",
+    "ToAddress": "adam.blasko@3osoft.com",
+    "ToDisplayName": "Adam Blasko"
   },
 
   "UsersSheetSettings": {
@@ -30,5 +37,5 @@
     "SheetName": "Sinners"
   },
 
-  "PublicHolidayApiKey": "<APi key>"
+  "PublicHolidayApiKey": "<ApiKey>"
 }

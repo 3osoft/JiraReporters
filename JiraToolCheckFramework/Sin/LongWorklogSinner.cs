@@ -15,8 +15,13 @@ namespace JiraToolCheckFramework.Sin
             SinDate.ToShortDateString(),
             SinnerLogin,
             SinString,
-            Hours
+            $"{Hours:F2}h"
          };
+      }
+
+      public override string ToMailString()
+      {
+         return $"{SinnerLogin} - {Hours:F2}h";
       }
    }
 }
