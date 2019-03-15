@@ -168,6 +168,15 @@
     <Compile Include="Database\JiraToolDbContext.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reporters\AbsenceReporter.cs" />
+    <Compile Include="Reporters\AttendanceReporter.cs" />
+    <Compile Include="Reporters\BaseReporter.cs" />
+    <Compile Include="Reporters\ProjectTimeSpentReporter.cs" />
+    <Compile Include="Reporters\PublicHolidayReporter.cs" />
+    <Compile Include="Reporters\SinnersReporter.cs" />
+    <Compile Include="Reporters\ToolRunReporter.cs" />
+    <Compile Include="Reporters\UserReporter.cs" />
+    <Compile Include="Reporters\WorklogsReporter.cs" />
     <Compile Include="Sin\LongWorklogSinner.cs" />
     <Compile Include="Sin\Sinner.cs" />
     <Compile Include="Sin\TimeTrackedSinner.cs" />
