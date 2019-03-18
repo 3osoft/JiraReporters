@@ -39,18 +39,18 @@ namespace JiraToolCheckFramework
          JiraApiClient client = new JiraApiClient(config.JiraSettings);
          UserReporter userReporter = new UserReporter(config.UsersSheetSettings);
 
-         WorklogsReporter fullHistoryWorklogsReporter = new WorklogsReporter(userReporter, client, new DateTime(2016, 1, 1),DateTime.Now);
+         WorklogsReporter fullHistoryWorklogsReporter = new WorklogsReporter(userReporter, client, new DateTime(2017, 1, 1),DateTime.Now);
          ProjectTimeSpentReporter projectTimeSpentReporter = new ProjectTimeSpentReporter(config.ProjectTimeSpentSheetSettings, fullHistoryWorklogsReporter);
-      
+
          WorklogsReporter currentRangeWorklogsReporter = new WorklogsReporter(userReporter, client, from, till);
-         
+
          AbsenceReporter absenceReporter = new AbsenceReporter(publicHolidayReporter, userReporter, client);
 
          AttendanceReporter attendanceReporter = new AttendanceReporter(userReporter, absenceReporter, currentRangeWorklogsReporter, from, till, config.AttendanceGridSheetSettings);
 
          projectTimeSpentReporter.Report();
          attendanceReporter.Report();
-         
+
          if (shouldReportSinnersToday)
          {
             var dateOfSin = GetLastWorkDay(publicHolidayReporter, DateTime.Now.Date.AddDays(-1));
@@ -61,7 +61,7 @@ namespace JiraToolCheckFramework
          {
             Logger.Info("Tool wont report sinners because it is weekend or holiday!");
          }
-         
+
          Logger.Info("Cleaning and filling database");
          System.Data.Entity.Database.SetInitializer(new DropCreateDatabaseIfModelChanges<JiraToolDbContext>());
          using (JiraToolDbContext ctx = new JiraToolDbContext())

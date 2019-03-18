@@ -1,5 +1,4 @@
 ﻿using JiraToolCheckFramework.Configuration;
-using JiraToolCheckFramework.GSheets.FinanceSimulator.Utilities;
 
 namespace JiraToolCheckFramework.GSheets
 {
