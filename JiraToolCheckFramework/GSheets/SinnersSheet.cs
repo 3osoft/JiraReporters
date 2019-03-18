@@ -17,7 +17,7 @@ namespace JiraToolCheckFramework.GSheets
 
          dataToWrite.AddRange(sinners.SelectMany(x => x.Select(y => y.ToRow())));
 
-         _client.WriteToSheet(_settings.SheetName, dataToWrite);
+         Client.WriteToSheet(Settings.SheetName, dataToWrite);
       }
    }
 }

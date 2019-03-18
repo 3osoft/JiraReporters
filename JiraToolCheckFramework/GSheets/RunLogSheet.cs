@@ -13,7 +13,7 @@ namespace JiraToolCheckFramework.GSheets
       public void WriteLog(DateTime start, DateTime end)
       {
          var dataToWrite = new List<IList<object>> {new List<object> {start.ToString("g"), end.ToString("g")}};
-         _client.WriteToSheet(_settings.SheetName, dataToWrite);
+         Client.WriteToSheet(Settings.SheetName, dataToWrite);
       }
    }
 }

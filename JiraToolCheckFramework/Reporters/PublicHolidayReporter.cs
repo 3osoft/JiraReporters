@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using JiraToolCheckFramework.JiraApi;
+using JiraToolCheckFramework.JiraApi.Models;
 using RestSharp;
 
 namespace JiraToolCheckFramework.Reporters

@@ -14,7 +14,7 @@ namespace JiraToolCheckFramework.GSheets
 
       public void WriteBudgetBurned(Dictionary<string, decimal> budgetBurnedDictionary)
       {
-         _client.ClearSheet(_settings.SheetName);
+         Client.ClearSheet(Settings.SheetName);
          List<IList<object>> dataToWrite = new List<IList<object>> {new List<object> {ProjectIdHeader, TimeSpentHeader}};
 
          foreach (var projectBurn in budgetBurnedDictionary)
@@ -26,7 +26,7 @@ namespace JiraToolCheckFramework.GSheets
             });
          }
 
-         _client.WriteToSheet(_settings.SheetName, dataToWrite);
+         Client.WriteToSheet(Settings.SheetName, dataToWrite);
       }
 
    }

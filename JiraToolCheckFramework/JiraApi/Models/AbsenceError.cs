@@ -1,4 +1,4 @@
-﻿namespace JiraToolCheckFramework.JiraApi
+﻿namespace JiraToolCheckFramework.JiraApi.Models
 {
    public class AbsenceError
    {

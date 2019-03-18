@@ -4,13 +4,13 @@ namespace JiraToolCheckFramework.GSheets
 {
    public abstract class GoogleSheet
    {
-      protected readonly GoogleSheetsSettings _settings;
-      protected readonly GoogleSheetClient _client;
+      protected readonly GoogleSheetsSettings Settings;
+      protected readonly GoogleSheetClient Client;
 
       protected GoogleSheet(GoogleSheetsSettings settings)
       {
-         _settings = settings;
-         _client = new GoogleSheetClient(_settings.GoogleSheetId);
+         Settings = settings;
+         Client = new GoogleSheetClient(Settings.GoogleSheetId);
       }
    }
 }

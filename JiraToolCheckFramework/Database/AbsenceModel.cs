@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using JiraToolCheckFramework.JiraApi;
+using JiraToolCheckFramework.JiraApi.Models;
 
 namespace JiraToolCheckFramework.Database
 {
@@ -19,22 +19,22 @@ namespace JiraToolCheckFramework.Database
          switch (AbsenceCategory)
          {
             case "Vacation":
-               result = JiraApi.AbsenceCategory.Vacation;
+               result = JiraApi.Models.AbsenceCategory.Vacation;
                break;
             case "Illness":
-               result = JiraApi.AbsenceCategory.Illness;
+               result = JiraApi.Models.AbsenceCategory.Illness;
                break;
             case "Doctor":
-               result = JiraApi.AbsenceCategory.Doctor;
+               result = JiraApi.Models.AbsenceCategory.Doctor;
                break;
             case "Doctor (Family)":
-               result = JiraApi.AbsenceCategory.DoctorFamily;
+               result = JiraApi.Models.AbsenceCategory.DoctorFamily;
                break;
             case "Personal leave":
-               result = JiraApi.AbsenceCategory.PersonalLeave;
+               result = JiraApi.Models.AbsenceCategory.PersonalLeave;
                break;
             default:
-               result = JiraApi.AbsenceCategory.Unknown;
+               result = JiraApi.Models.AbsenceCategory.Unknown;
                break;
          }
 

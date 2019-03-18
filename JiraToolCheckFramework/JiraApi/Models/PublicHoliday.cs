@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace JiraToolCheckFramework.JiraApi
+namespace JiraToolCheckFramework.JiraApi.Models
 {
    public class PublicHoliday
    {

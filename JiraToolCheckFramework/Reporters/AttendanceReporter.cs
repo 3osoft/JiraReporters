@@ -5,6 +5,7 @@ using JiraToolCheckFramework.Configuration;
 using JiraToolCheckFramework.Database;
 using JiraToolCheckFramework.GSheets;
 using JiraToolCheckFramework.JiraApi;
+using JiraToolCheckFramework.JiraApi.Models;
 using JiraToolCheckFramework.Utils;
 
 namespace JiraToolCheckFramework.Reporters

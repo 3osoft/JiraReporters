@@ -6,6 +6,7 @@ using System.Linq;
 using JiraToolCheckFramework.Configuration;
 using JiraToolCheckFramework.Database;
 using JiraToolCheckFramework.JiraApi;
+using JiraToolCheckFramework.JiraApi.Models;
 using JiraToolCheckFramework.Reporters;
 using Newtonsoft.Json;
 

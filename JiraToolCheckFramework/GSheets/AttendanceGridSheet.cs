@@ -16,7 +16,7 @@ namespace JiraToolCheckFramework.GSheets
 
       public void WriteAttendance(List<AttendanceModel> attendances)
       {
-         _client.ClearSheet(_settings.SheetName);
+         Client.ClearSheet(Settings.SheetName);
 
          var availableDates = attendances.Select(x => x.Date).Distinct().OrderBy(x => x).ToList();
          var groupedAttendances = attendances.OrderBy(x => x.Date).GroupBy(x => x.User);
@@ -38,7 +38,7 @@ namespace JiraToolCheckFramework.GSheets
             resultData.Add(newRow);
          }
 
-         _client.WriteToSheet(_settings.SheetName, resultData);
+         Client.WriteToSheet(Settings.SheetName, resultData);
       }
    }
 }

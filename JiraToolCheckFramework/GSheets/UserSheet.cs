@@ -18,7 +18,7 @@ namespace JiraToolCheckFramework.GSheets
 
       public List<UserModel> GetUsers()
       {
-         IList<IList<object>> userSheetData = _client.GetSheetData(_settings.SheetName);
+         IList<IList<object>> userSheetData = Client.GetSheetData(Settings.SheetName);
          var users = userSheetData.Skip(UserSheetRowsToSkip).Select(x => new UserModel
          {
             UserName = (string) x[UserSheetLoginColumnIndex],

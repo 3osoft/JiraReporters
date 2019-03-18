@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace JiraToolCheckFramework.JiraApi
+namespace JiraToolCheckFramework.JiraApi.Models
 {
    [Serializable]
    public class Timesheet
