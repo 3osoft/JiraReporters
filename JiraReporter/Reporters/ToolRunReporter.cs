@@ -1,31 +1,26 @@
 ﻿using System;
-using JiraReporter.Configuration;
-using JiraReporter.GSheets;
+using JiraReporter.Domain;
 
 namespace JiraReporter.Reporters
 {
-   public class ToolRunReporter : BaseReporter<object>
+   public class ToolRunReporter : BaseReporter<ToolRun>
    {
-      private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
       private readonly DateTime _runStart;
       private readonly DateTime _runEnd;
-      private readonly GoogleSheetsSettings _settings;
 
-      public ToolRunReporter(DateTime runStart, DateTime runEnd, GoogleSheetsSettings settings)
+      public ToolRunReporter(DateTime runStart, DateTime runEnd)
       {
          _runStart = runStart;
          _runEnd = runEnd;
-         _settings = settings;
       }
 
-      protected override object CalculateReportData()
+      protected override ToolRun CalculateReportData()
       {
-         var runLogSheet = new RunLogSheet(_settings);
-         Logger.Info("Writng run log");
-         runLogSheet.WriteLog(_runStart, _runEnd);
-
-         return null;
+         return new ToolRun
+         {
+            RunStart = _runStart,
+            RunEnd = _runEnd
+         };
       }
    }
 }

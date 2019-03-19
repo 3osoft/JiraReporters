@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using JiraReporter.Configuration;
 using JiraReporter.GSheets;
-using JiraToolCheckFramework.Configuration;
 
 namespace JiraToolCheckFramework.GSheets
 {
-   public class ProjectTimeSpentSheet : GoogleSheet
+   public class ProjectTimeSpentSheet : WritableGoogleSheet<Dictionary<string, decimal>>
    {
       private const string ProjectIdHeader = "Project";
       private const string TimeSpentHeader = "Hours spent";
@@ -13,11 +12,10 @@ namespace JiraToolCheckFramework.GSheets
       public ProjectTimeSpentSheet(GoogleSheetsSettings settings) : base(settings)
       {
       }
-
-      public void WriteBudgetBurned(Dictionary<string, decimal> budgetBurnedDictionary)
+      public override void Write(Dictionary<string, decimal> budgetBurnedDictionary)
       {
          Client.ClearSheet(Settings.SheetName);
-         List<IList<object>> dataToWrite = new List<IList<object>> {new List<object> {ProjectIdHeader, TimeSpentHeader}};
+         List<IList<object>> dataToWrite = new List<IList<object>> { new List<object> { ProjectIdHeader, TimeSpentHeader } };
 
          foreach (var projectBurn in budgetBurnedDictionary)
          {
@@ -30,6 +28,5 @@ namespace JiraToolCheckFramework.GSheets
 
          Client.WriteToSheet(Settings.SheetName, dataToWrite);
       }
-
    }
 }

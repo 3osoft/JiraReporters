@@ -35,7 +35,7 @@ namespace JiraReporter.Gmail
                new FileDataStore(CredPath, true)).Result;
          }
          
-         var service = new GmailService(new BaseClientService.Initializer()
+         var service = new GmailService(new BaseClientService.Initializer
          {
             HttpClientInitializer = credential,
             ApplicationName = ApplicationName

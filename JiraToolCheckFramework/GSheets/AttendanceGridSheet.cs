@@ -4,11 +4,10 @@ using System.Linq;
 using JiraReporter.Configuration;
 using JiraReporter.Domain;
 using JiraReporter.GSheets;
-using JiraToolCheckFramework.Database;
 
 namespace JiraToolCheckFramework.GSheets
 {
-   public class AttendanceGridSheet : GoogleSheet
+   public class AttendanceGridSheet : WritableGoogleSheet<List<Attendance>>
    {
       private const string UsersColumnHeader = "Users";
 
@@ -16,17 +15,17 @@ namespace JiraToolCheckFramework.GSheets
       {
       }
 
-      public void WriteAttendance(List<Attendance> attendances)
+      public override void Write(List<Attendance> dataToWrite)
       {
          Client.ClearSheet(Settings.SheetName);
 
-         var availableDates = attendances.Select(x => x.Date).Distinct().OrderBy(x => x).ToList();
-         var groupedAttendances = attendances.OrderBy(x => x.Date).GroupBy(x => x.User);
+         var availableDates = dataToWrite.Select(x => x.Date).Distinct().OrderBy(x => x).ToList();
+         var groupedAttendances = dataToWrite.OrderBy(x => x.Date).GroupBy(x => x.User);
          var resultData = new List<IList<object>>();
          List<object> headerFirstRow = new List<object> { UsersColumnHeader };
          headerFirstRow.AddRange(availableDates.Select(x => x.ToString("MM/dd/yyyy")));
 
-         List<object> headerSecondRow = new List<object> {""};
+         List<object> headerSecondRow = new List<object> { "" };
          headerSecondRow.AddRange(availableDates.Select(x => x.DayOfWeek.ToString()));
 
          resultData.Add(headerFirstRow);
@@ -34,7 +33,7 @@ namespace JiraToolCheckFramework.GSheets
 
          foreach (var groupedAttendance in groupedAttendances)
          {
-            var newRow = new List<object> {groupedAttendance.Key};
+            var newRow = new List<object> { groupedAttendance.Key };
             newRow.AddRange(groupedAttendance.OrderBy(x => x.Date).Select(x => $"={x.HoursWorked.ToString(CultureInfo.GetCultureInfo("en-US"))}+{x.AbsenceTotal.ToString(CultureInfo.GetCultureInfo("en-US"))}"));
 
             resultData.Add(newRow);

@@ -3,13 +3,19 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using JiraReporter.Domain;
+using JiraReporter.GSheets;
 using JiraReporter.JiraApi;
 using JiraReporter.JiraApi.Models;
 using JiraReporter.Reporters;
+using JiraReporter.Reporters.Writer;
 using JiraToolCheckFramework.Configuration;
 using JiraToolCheckFramework.Database;
 using JiraToolCheckFramework.Database.Mappers;
+using JiraToolCheckFramework.Gmail;
+using JiraToolCheckFramework.GSheets;
 using JiraToolCheckFramework.Reporters;
+using JiraToolCheckFramework.Sin;
 using Newtonsoft.Json;
 
 namespace JiraToolCheckFramework
@@ -43,7 +49,7 @@ namespace JiraToolCheckFramework
          UserReporter userReporter = new UserReporter(config.UsersSheetSettings);
 
          WorklogsReporter fullHistoryWorklogsReporter = new WorklogsReporter(userReporter, client, new DateTime(2017, 1, 1),DateTime.Now);
-         ProjectTimeSpentReporter projectTimeSpentReporter = new ProjectTimeSpentReporter(config.ProjectTimeSpentSheetSettings, fullHistoryWorklogsReporter);
+         ProjectTimeSpentReporter projectTimeSpentReporter = new ProjectTimeSpentReporter(fullHistoryWorklogsReporter);
 
          WorklogsReporter currentRangeWorklogsReporter = new WorklogsReporter(userReporter, client, from, till);
 
@@ -51,14 +57,22 @@ namespace JiraToolCheckFramework
 
          AttendanceReporter attendanceReporter = new AttendanceReporter(userReporter, absenceReporter, currentRangeWorklogsReporter, from, till, config.AttendanceGridSheetSettings);
 
-         projectTimeSpentReporter.Report();
-         attendanceReporter.Report();
+         var attendanceReportWriter = new ReportWriter<List<Attendance>>(attendanceReporter, new AttendanceGridSheet(config.AttendanceGridSheetSettings));
+         attendanceReportWriter.Write();
+
+         var projectTimeSpentWriter = new ReportWriter<Dictionary<string, decimal>>(projectTimeSpentReporter, new ProjectTimeSpentSheet(config.ProjectTimeSpentSheetSettings));
+         projectTimeSpentWriter.Write();
 
          if (shouldReportSinnersToday)
          {
             var dateOfSin = GetLastWorkDay(publicHolidayReporter, DateTime.Now.Date.AddDays(-1));
-            SinnersReporter sinnersReporter = new SinnersReporter(userReporter, currentRangeWorklogsReporter, attendanceReporter, config, dateOfSin);
-            sinnersReporter.Report();
+            SinnersReporter sinnersReporter = new SinnersReporter(userReporter, currentRangeWorklogsReporter, attendanceReporter, dateOfSin);
+
+            var gmailSinnerReportWriter = new ReportWriter<List<IEnumerable<Sinner>>>(sinnersReporter, new SinnerSheet(config.SinnersSheetSettings));
+            gmailSinnerReportWriter.Write();
+
+            var gSheetSinnerReportWriter = new ReportWriter<List<IEnumerable<Sinner>>>(sinnersReporter, new SinnerGmail(config.SinnerNotifierGmailSettings, dateOfSin));
+            gSheetSinnerReportWriter.Write();
          }
          else
          {
@@ -83,8 +97,9 @@ namespace JiraToolCheckFramework
 
          DateTime runEndDateTime = DateTime.Now;
 
-         ToolRunReporter runReporter = new ToolRunReporter(runStartDateTime, runEndDateTime, config.RunLogSheetSettings);
-         runReporter.Report();
+         ToolRunReporter runReporter = new ToolRunReporter(runStartDateTime, runEndDateTime);
+         ReportWriter<ToolRun> toolRunWriter = new ReportWriter<ToolRun>(runReporter, new RunLogSheet(config.RunLogSheetSettings));
+         toolRunWriter.Write();
 
          Logger.Info("Tool run finished");
       }

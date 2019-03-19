@@ -140,15 +140,15 @@
     <Compile Include="Database\Mappers\WorklogMapper.cs" />
     <Compile Include="Database\UserModel.cs" />
     <Compile Include="Database\WorklogModel.cs" />
+    <Compile Include="Gmail\SinnerGmail.cs" />
     <Compile Include="GSheets\ProjectTimeSpentSheet.cs" />
     <Compile Include="GSheets\AttendanceGridSheet.cs" />
-    <Compile Include="GSheets\SinnersSheet.cs" />
+    <Compile Include="GSheets\SinnerSheet.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reporters\AttendanceReporter.cs" />
     <Compile Include="Reporters\ProjectTimeSpentReporter.cs" />
     <Compile Include="Reporters\SinnersReporter.cs" />
-    <Compile Include="Reporters\WorklogsReporter.cs" />
     <Compile Include="Sin\LongWorklogSinner.cs" />
     <Compile Include="Sin\Sinner.cs" />
     <Compile Include="Sin\TimeTrackedSinner.cs" />

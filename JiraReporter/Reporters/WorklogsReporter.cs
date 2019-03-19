@@ -4,9 +4,8 @@ using System.Linq;
 using JiraReporter.Domain;
 using JiraReporter.JiraApi;
 using JiraReporter.JiraApi.Models;
-using JiraReporter.Reporters;
 
-namespace JiraToolCheckFramework.Reporters
+namespace JiraReporter.Reporters
 {
    public class WorklogsReporter : BaseReporter<List<Worklog>>
    {

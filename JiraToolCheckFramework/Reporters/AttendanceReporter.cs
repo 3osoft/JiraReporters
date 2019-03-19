@@ -37,9 +37,6 @@ namespace JiraToolCheckFramework.Reporters
 
          var attendance = GetAttendances(_userReporter.GetUserNames(), _absenceReporter.Report(), _worklogsReporter.Report(), _from, _till);
          Logger.Info("Writing to time grid sheet");
-         //todo we need to remove writing to sheet in this reporter
-         var timeGridSheet = new AttendanceGridSheet(_settings);
-         timeGridSheet.WriteAttendance(attendance);
 
          return attendance;
       }

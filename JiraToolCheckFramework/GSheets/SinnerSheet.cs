@@ -2,22 +2,21 @@
 using System.Linq;
 using JiraReporter.Configuration;
 using JiraReporter.GSheets;
-using JiraToolCheckFramework.Configuration;
 using JiraToolCheckFramework.Sin;
 
 namespace JiraToolCheckFramework.GSheets
 {
-   public class SinnersSheet : GoogleSheet
+   public class SinnerSheet : WritableGoogleSheet<List<IEnumerable<Sinner>>>
    {
-      public SinnersSheet(GoogleSheetsSettings settings) : base(settings)
+      public SinnerSheet(GoogleSheetsSettings settings) : base(settings)
       {
       }
 
-      public void WriteSinners(List<IEnumerable<Sinner>> sinners)
+      public override void Write(List<IEnumerable<Sinner>> data)
       {
          var dataToWrite = new List<IList<object>>();
 
-         dataToWrite.AddRange(sinners.SelectMany(x => x.Select(y => y.ToRow())));
+         dataToWrite.AddRange(data.SelectMany(x => x.Select(y => y.ToRow())));
 
          Client.WriteToSheet(Settings.SheetName, dataToWrite);
       }

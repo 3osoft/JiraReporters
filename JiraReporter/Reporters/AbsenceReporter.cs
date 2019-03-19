@@ -35,14 +35,14 @@ namespace JiraReporter.Reporters
          Logger.Info("Getting absences");
 
          var initialsDictionary = _userReporter.Report().ToDictionary(x => x.Initials, x => x.UserName);
-         var allStatusAbsences = _jiraApiClient.GetAbsences(initialsDictionary);
-         var absences = allStatusAbsences.Where(x => !_absenceStatusesToBeIgnored.Contains(x.Status));
+         var allStatusAbsences = _jiraApiClient.GetAbsences(initialsDictionary).ToList();
+         var absences = allStatusAbsences.Where(x => !_absenceStatusesToBeIgnored.Contains(x.Status)).ToList();
 
-         Logger.Info("Found {0} absences in all status, {1} in usable status", allStatusAbsences.Count(), absences.Count());
+         Logger.Info("Found {0} absences in all status, {1} in usable status", allStatusAbsences.Count, absences.Count);
          
          var holidays = _publicHolidayReporter.Report();
 
-         return ConverJiraAbsencesToDomainAbsences(absences.ToList(), holidays);
+         return ConverJiraAbsencesToDomainAbsences(absences, holidays);
       }
 
       private static List<Absence> ConverJiraAbsencesToDomainAbsences(List<JiraAbsence> absences, List<PublicHoliday> holidays)
