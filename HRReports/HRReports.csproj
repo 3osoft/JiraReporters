@@ -53,11 +53,5 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\JiraToolCheckFramework\JiraToolCheckFramework.csproj">
-      <Project>{8F6DE5EE-104C-41AA-9122-7BAADC642E51}</Project>
-      <Name>JiraToolCheckFramework</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
