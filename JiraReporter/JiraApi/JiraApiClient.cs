@@ -108,14 +108,14 @@ namespace JiraReporter.JiraApi
                string workLoggedByUser = users.SingleOrDefault(x => x == workLoggedByUserName);
                if (startTime >= from && startTime <= till && workLoggedByUser != null)
                {
-                  Worklog worklog = new Worklog
+                  JiraWorklog jiraWorklog = new JiraWorklog
                   {
                      IssueKey = issueKey,
                      Labels = labels.Split(new[] { "||" }, StringSplitOptions.RemoveEmptyEntries),
                      Started = startTime,
                      Duration = TimeSpan.FromSeconds(Convert.ToDouble(worklogJson.timeSpentSeconds.Value))
                   };
-                  results.AddWorklogForUser(workLoggedByUser, worklog);
+                  results.AddWorklogForUser(workLoggedByUser, jiraWorklog);
                }
             }
          }
@@ -183,9 +183,9 @@ namespace JiraReporter.JiraApi
          return restResponse.Data;
       }
 
-      public IEnumerable<Absence> GetAbsences(Dictionary<string, string> userNameInitialsDictionary)
+      public IEnumerable<JiraAbsence> GetAbsences(Dictionary<string, string> userNameInitialsDictionary)
       {
-         var result = new List<Absence>();
+         var result = new List<JiraAbsence>();
          ConcurrentBag<dynamic> issuesJsons = new ConcurrentBag<dynamic>();
          
          var items = GetAbsencePage(0);

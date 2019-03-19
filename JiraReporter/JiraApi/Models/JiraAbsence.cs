@@ -3,7 +3,7 @@
 namespace JiraReporter.JiraApi.Models
 {
    [Serializable]
-   public class Absence
+   public class JiraAbsence
    {
       public int Id { get; set; }
       public string IssueKey { get; set; }

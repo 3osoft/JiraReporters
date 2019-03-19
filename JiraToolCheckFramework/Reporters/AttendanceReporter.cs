@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using JiraReporter.Configuration;
+using JiraReporter.Domain;
 using JiraReporter.JiraApi.Models;
 using JiraReporter.Reporters;
 using JiraReporter.Utils;
-using JiraToolCheckFramework.Configuration;
-using JiraToolCheckFramework.Database;
 using JiraToolCheckFramework.GSheets;
 
 namespace JiraToolCheckFramework.Reporters
 {
-   public class AttendanceReporter : BaseReporter<List<AttendanceModel>>
+   public class AttendanceReporter : BaseReporter<List<Attendance>>
    {
       private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -32,21 +31,22 @@ namespace JiraToolCheckFramework.Reporters
          _settings = settings;
       }
 
-      protected override List<AttendanceModel> CalculateReportData()
+      protected override List<Attendance> CalculateReportData()
       {
          Logger.Info("Calculating attendance");
 
          var attendance = GetAttendances(_userReporter.GetUserNames(), _absenceReporter.Report(), _worklogsReporter.Report(), _from, _till);
          Logger.Info("Writing to time grid sheet");
+         //todo we need to remove writing to sheet in this reporter
          var timeGridSheet = new AttendanceGridSheet(_settings);
          timeGridSheet.WriteAttendance(attendance);
 
          return attendance;
       }
 
-      private List<AttendanceModel> GetAttendances(List<string> users, List<AbsenceModel> absences, List<WorklogModel> worklogs, DateTime from, DateTime to)
+      private List<Attendance> GetAttendances(List<string> users, List<Absence> absences, List<Worklog> worklogs, DateTime from, DateTime to)
       {
-         List<AttendanceModel> result = new List<AttendanceModel>();
+         List<Attendance> result = new List<Attendance>();
 
          foreach (DateTime day in DateTimeUtils.EachDay(from, to))
          {
@@ -55,7 +55,7 @@ namespace JiraToolCheckFramework.Reporters
                var userDateAbsences = absences.Where(x => x.Date.Equals(day) && x.UserName.Equals(user)).ToList();
                var userDateWorklogs = worklogs.Where(x => x.Date.Equals(day) && x.User.Equals(user));
 
-               var newAttendanceModel = new AttendanceModel
+               var newAttendanceModel = new Attendance
                {
                   Date = day,
                   User = user,
@@ -67,7 +67,6 @@ namespace JiraToolCheckFramework.Reporters
                   AbsenceVacation = userDateAbsences.Where(x => x.GetAbsenceCategory() == AbsenceCategory.Vacation).Sum(x => x.Hours),
                };
 
-               newAttendanceModel.CalculateTotals();
                result.Add(newAttendanceModel);
             }
          }

@@ -5,7 +5,7 @@ using System.Linq;
 namespace JiraReporter.JiraApi.Models
 {
    [Serializable]
-   public class Worklog
+   public class JiraWorklog
    {
       public string IssueKey { get; set; }
       public IEnumerable<string> Labels { get; set; }

@@ -7,14 +7,14 @@ namespace JiraReporter.JiraApi.Models
    [Serializable]
    public class Timesheet
    {
-      private readonly List<Worklog> _worklogs = new List<Worklog>();
+      private readonly List<JiraWorklog> _worklogs = new List<JiraWorklog>();
 
       public Timesheet(string user)
       {
          User = user;
       }
 
-      public IEnumerable<Worklog> Worklogs => _worklogs;
+      public IEnumerable<JiraWorklog> Worklogs => _worklogs;
 
       public string User { get; private set; }
 
@@ -26,23 +26,23 @@ namespace JiraReporter.JiraApi.Models
          }
       }
 
-      public void AddWorklog(Worklog worklog)
+      public void AddWorklog(JiraWorklog jiraWorklog)
       {
-         _worklogs.Add(worklog);
+         _worklogs.Add(jiraWorklog);
       }
 
-      public decimal GetHoursOnWorklog(Worklog worklog)
+      public decimal GetHoursOnWorklog(JiraWorklog jiraWorklog)
       {
-         decimal result = Convert.ToDecimal(worklog.Duration.TotalHours);
+         decimal result = Convert.ToDecimal(jiraWorklog.Duration.TotalHours);
          return result;
       }
 
-      public decimal GetShareOfEffortOnWorklog(Worklog worklog)
+      public decimal GetShareOfEffortOnWorklog(JiraWorklog jiraWorklog)
       {
          decimal result = 0;
          if (TotalHours > 0)
          {
-            result = GetHoursOnWorklog(worklog) / TotalHours;
+            result = GetHoursOnWorklog(jiraWorklog) / TotalHours;
          }
 
          return result;

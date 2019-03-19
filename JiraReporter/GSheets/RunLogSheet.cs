@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using JiraReporter.Configuration;
-using JiraReporter.GSheets;
-using JiraToolCheckFramework.Configuration;
 
-namespace JiraToolCheckFramework.GSheets
+namespace JiraReporter.GSheets
 {
    public class RunLogSheet : GoogleSheet
    {

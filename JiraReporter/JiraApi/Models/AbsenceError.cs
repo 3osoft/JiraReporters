@@ -2,7 +2,7 @@
 {
    public class AbsenceError
    {
-      public Absence Absence { get; set; }
+      public JiraAbsence JiraAbsence { get; set; }
       public AbsenceErrorType AbsenceErrorType { get; set; }
    }
 

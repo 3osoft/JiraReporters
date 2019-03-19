@@ -5,8 +5,10 @@ using System.IO;
 using System.Linq;
 using JiraReporter.JiraApi;
 using JiraReporter.JiraApi.Models;
+using JiraReporter.Reporters;
 using JiraToolCheckFramework.Configuration;
 using JiraToolCheckFramework.Database;
+using JiraToolCheckFramework.Database.Mappers;
 using JiraToolCheckFramework.Reporters;
 using Newtonsoft.Json;
 
@@ -70,10 +72,10 @@ namespace JiraToolCheckFramework
             using (var transaction = ctx.Database.BeginTransaction())
             {
                ClearDatabase(ctx);
-               ctx.Absences.AddRange(absenceReporter.Report());
-               ctx.Worklogs.AddRange(currentRangeWorklogsReporter.Report());
-               ctx.Attendance.AddRange(attendanceReporter.Report());
-               ctx.Users.AddRange(userReporter.Report());
+               ctx.Absences.AddRange(absenceReporter.Report().Select(AbsenceMapper.ToModel));
+               ctx.Worklogs.AddRange(currentRangeWorklogsReporter.Report().Select(WorklogMapper.ToModel));
+               ctx.Attendance.AddRange(attendanceReporter.Report().Select(AttendanceMapper.ToModel));
+               ctx.Users.AddRange(userReporter.Report().Select(UserMapper.ToModel));
                ctx.SaveChanges();
                transaction.Commit();
             }

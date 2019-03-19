@@ -20,7 +20,7 @@ namespace JiraReporter.JiraApi.Models
          return result;
       }
 
-      public void AddWorklogForUser(string user, Worklog worklog)
+      public void AddWorklogForUser(string user, JiraWorklog jiraWorklog)
       {
          //Timesheet timesheet = _userToTimesheet.GetOrCreate(user, new Timesheet(user));
          bool exists = _userToTimesheet.TryGetValue(user, out var timesheet);
@@ -31,7 +31,7 @@ namespace JiraReporter.JiraApi.Models
             _userToTimesheet.Add(user, timesheet);
          }
 
-         timesheet.AddWorklog(worklog);
+         timesheet.AddWorklog(jiraWorklog);
       }
    }
 }

@@ -1,9 +1,8 @@
 ﻿using System;
 using JiraReporter.Configuration;
-using JiraReporter.Reporters;
-using JiraToolCheckFramework.GSheets;
+using JiraReporter.GSheets;
 
-namespace JiraToolCheckFramework.Reporters
+namespace JiraReporter.Reporters
 {
    public class ToolRunReporter : BaseReporter<object>
    {

@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using JiraReporter.Configuration;
+using JiraReporter.Domain;
 using JiraReporter.GSheets;
 using JiraToolCheckFramework.Database;
 
@@ -15,7 +16,7 @@ namespace JiraToolCheckFramework.GSheets
       {
       }
 
-      public void WriteAttendance(List<AttendanceModel> attendances)
+      public void WriteAttendance(List<Attendance> attendances)
       {
          Client.ClearSheet(Settings.SheetName);
 

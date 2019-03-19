@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using JiraReporter.Configuration;
-using JiraReporter.GSheets;
-using JiraToolCheckFramework.Database;
+using JiraReporter.Domain;
 
-namespace JiraToolCheckFramework.GSheets
+namespace JiraReporter.GSheets
 {
    public class UserSheet : GoogleSheet
    {
@@ -17,10 +16,10 @@ namespace JiraToolCheckFramework.GSheets
       {
       }
 
-      public List<UserModel> GetUsers()
+      public List<User> GetUsers()
       {
          IList<IList<object>> userSheetData = Client.GetSheetData(Settings.SheetName);
-         var users = userSheetData.Skip(UserSheetRowsToSkip).Select(x => new UserModel
+         var users = userSheetData.Skip(UserSheetRowsToSkip).Select(x => new User
          {
             UserName = (string) x[UserSheetLoginColumnIndex],
             Initials = (string) x[UserSheetInitialsColumnIndex],

@@ -15,18 +15,5 @@ namespace JiraToolCheckFramework.Database
       public string IssueKey { get; set; }
       public string ProjectKey { get; set; }
       public DateTime Date { get; set; }
-
-      public static WorklogModel FromWorklog(Worklog worklog, string user)
-      {
-         return new WorklogModel
-         {
-            User = user,
-            Category = worklog.Category,
-            Date = worklog.Started.Date,
-            Hours = Convert.ToDecimal(worklog.Duration.TotalHours),
-            IssueKey = worklog.IssueKey,
-            ProjectKey = worklog.ProjectKey
-         };
-      }
    }
 }

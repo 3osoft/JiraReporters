@@ -4,10 +4,9 @@ using System.Linq;
 using System.Threading;
 using JiraReporter.JiraApi;
 using JiraReporter.JiraApi.Models;
-using JiraReporter.Reporters;
 using RestSharp;
 
-namespace JiraToolCheckFramework.Reporters
+namespace JiraReporter.Reporters
 {
    public class PublicHolidayReporter : BaseReporter<List<PublicHoliday>>
    {

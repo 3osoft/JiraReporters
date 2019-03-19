@@ -8,7 +8,7 @@ namespace JiraReporter.JiraApi.Models
 {
    internal static class AbsenceMapper
    {
-      public static Absence MapAbsence(dynamic item, Dictionary<string, string> userNameInitialsDictionary)
+      public static JiraAbsence MapAbsence(dynamic item, Dictionary<string, string> userNameInitialsDictionary)
       {
          var endDateField = CustomFieldsConverter.CustomFields[CustomFieldsConverter.CustomFieldsEnum.AbsEndDate];
          var startDateField = CustomFieldsConverter.CustomFields[CustomFieldsConverter.CustomFieldsEnum.AbsStartDate];
@@ -18,7 +18,7 @@ namespace JiraReporter.JiraApi.Models
 
          if (item != null)
          {
-            Absence absence = new Absence
+            JiraAbsence jiraAbsence = new JiraAbsence
             {
                IssueKey = item.key,
                Status = item.fields.status.name,
@@ -30,7 +30,7 @@ namespace JiraReporter.JiraApi.Models
                DurationType = item.fields[daysHourField].value.ToString().Equals("Days") ? AbsenceDayHourEnum.Days : AbsenceDayHourEnum.Hours,
                AbsenceCategory = item.fields[absenceCategoryField].value.ToString()
             };
-            return absence;
+            return jiraAbsence;
          }
          return null;
       }

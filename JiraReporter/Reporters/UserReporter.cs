@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using JiraReporter.Configuration;
-using JiraReporter.Reporters;
-using JiraToolCheckFramework.Database;
-using JiraToolCheckFramework.GSheets;
+using JiraReporter.Domain;
+using JiraReporter.GSheets;
 
-namespace JiraToolCheckFramework.Reporters
+namespace JiraReporter.Reporters
 {
-   public class UserReporter : BaseReporter<List<UserModel>>
+   public class UserReporter : BaseReporter<List<User>>
    {
       private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -22,7 +21,7 @@ namespace JiraToolCheckFramework.Reporters
          return Report().Select(x => x.UserName).ToList();
       }
 
-      protected override List<UserModel> CalculateReportData()
+      protected override List<User> CalculateReportData()
       {
          Logger.Info("Getting users");
          var users = _userSheet.GetUsers();

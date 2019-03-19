@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JiraReporter.Domain;
 using JiraReporter.JiraApi;
 using JiraReporter.JiraApi.Models;
-using JiraReporter.Reporters;
 using JiraReporter.Utils;
-using JiraToolCheckFramework.Database;
 
-namespace JiraToolCheckFramework.Reporters
+namespace JiraReporter.Reporters
 {
-   public class AbsenceReporter : BaseReporter<List<AbsenceModel>>
+   public class AbsenceReporter : BaseReporter<List<Absence>>
    {
       private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
       private const int WorkDayHours = 8;
@@ -31,7 +30,7 @@ namespace JiraToolCheckFramework.Reporters
          };
       }
 
-      protected override List<AbsenceModel> CalculateReportData()
+      protected override List<Absence> CalculateReportData()
       {
          Logger.Info("Getting absences");
 
@@ -43,12 +42,12 @@ namespace JiraToolCheckFramework.Reporters
          
          var holidays = _publicHolidayReporter.Report();
 
-         return ConverJiraAbsencesToModelAbsences(absences.ToList(), holidays);
+         return ConverJiraAbsencesToDomainAbsences(absences.ToList(), holidays);
       }
 
-      private static List<AbsenceModel> ConverJiraAbsencesToModelAbsences(List<Absence> absences, List<PublicHoliday> holidays)
+      private static List<Absence> ConverJiraAbsencesToDomainAbsences(List<JiraAbsence> absences, List<PublicHoliday> holidays)
       {
-         List<AbsenceModel> result = new List<AbsenceModel>();
+         List<Absence> result = new List<Absence>();
          List<AbsenceError> errors = new List<AbsenceError>();
 
          foreach (var absence in absences)
@@ -68,16 +67,16 @@ namespace JiraToolCheckFramework.Reporters
             {
                errors.Add(new AbsenceError
                {
-                  Absence = absence,
+                  JiraAbsence = absence,
                   AbsenceErrorType = AbsenceErrorType.OneDayWithDurationOverWorkday
                });
-               //throw new Exception($"Absence {absence.IssueKey} is for the same day with duration {totalAbsenceDuration}");
+               //throw new Exception($"JiraAbsence {jiraAbsence.IssueKey} is for the same day with duration {totalAbsenceDuration}");
             }
 
             bool hasPartialDayAtStart = false;
             bool hasPartialDayAtEnd = false;
 
-            //we dont care about hafldays in same-day absence
+            //we dont care about hafldays in same-day jiraAbsence
             if (!isOneDayAbsence)
             {
                hasPartialDayAtStart = absence.StartDate.Hour > 9;
@@ -89,11 +88,11 @@ namespace JiraToolCheckFramework.Reporters
 
                errors.Add(new AbsenceError
                {
-                  Absence = absence,
+                  JiraAbsence = absence,
                   AbsenceErrorType = AbsenceErrorType.PartialAtBothEnds
                });
 
-               //throw new Exception($"Absence {absence.IssueKey} has partial days at both start and end!");
+               //throw new Exception($"JiraAbsence {jiraAbsence.IssueKey} has partial days at both start and end!");
             }
 
             foreach (var currentDay in DateTimeUtils.EachDay(absence.StartDate.Date, absence.EndDate.Date))
@@ -107,11 +106,11 @@ namespace JiraToolCheckFramework.Reporters
 
                      errors.Add(new AbsenceError
                      {
-                        Absence = absence,
+                        JiraAbsence = absence,
                         AbsenceErrorType = AbsenceErrorType.MoreHoursInCalendarThanInDuration
                      });
 
-                     //throw new Exception($"More than all hours were trying to be used in absence {absence.IssueKey}");
+                     //throw new Exception($"More than all hours were trying to be used in jiraAbsence {jiraAbsence.IssueKey}");
                   }
 
                   if (hasPartialDayAtStart && currentDay == absence.StartDate.Date)
@@ -133,7 +132,7 @@ namespace JiraToolCheckFramework.Reporters
                      remainingAbsenceDuration -= newModelHours;
                   }
 
-                  result.Add(new AbsenceModel
+                  result.Add(new Absence
                   {
                      AbsenceCategory = absence.AbsenceCategory,
                      Date = currentDay,
@@ -148,18 +147,18 @@ namespace JiraToolCheckFramework.Reporters
             {
                errors.Add(new AbsenceError
                {
-                  Absence = absence,
+                  JiraAbsence = absence,
                   AbsenceErrorType = AbsenceErrorType.UnusedOrNoRemainingDuration
                });
 
-               //throw new Exception($"Not all hours from absence {absence.IssueKey} were used");
+               //throw new Exception($"Not all hours from jiraAbsence {jiraAbsence.IssueKey} were used");
             }
          }
 
          if (errors.Any())
          {
             var errorString = string.Join(Environment.NewLine,
-               errors.Select(x => $"{x.Absence.IssueKey} {x.AbsenceErrorType}"));
+               errors.Select(x => $"{x.JiraAbsence.IssueKey} {x.AbsenceErrorType}"));
 
             Logger.Warn("Found {0} errors in absences!", errors.Count);
             Logger.Warn(errorString);
