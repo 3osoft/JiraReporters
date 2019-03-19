@@ -53,5 +53,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JiraReporter\JiraReporterCore.csproj">
+      <Project>{b931cecc-36c8-4cfc-b24e-aa3fa9cf8520}</Project>
+      <Name>JiraReporterCore</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

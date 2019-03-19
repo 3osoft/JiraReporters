@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JiraToolCheckFramework.Database;
+using JiraReporterCore.Domain;
 
 namespace HRReports.HR
 {
@@ -53,7 +53,7 @@ namespace HRReports.HR
          return freshestUserData.Where(x => !x.TerminationDate.HasValue || x.TerminationDate.Value.Date < DateTime.Now.Date).ToList();
       }
 
-      public List<Overtime> CalculateOvertimes(IEnumerable<AttendanceModel> attendances, int year, int month, List<UserData> users, int monthWorkHours)
+      public List<Overtime> CalculateOvertimes(IEnumerable<Attendance> attendances, int year, int month, List<UserData> users, int monthWorkHours)
       {
          var timeTrackingUsers = users.Where(x => x.IsTracking.HasValue && x.IsTracking.Value);
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace JiraReporter.JiraApi.Models
+namespace JiraReporterCore.JiraApi.Models
 {
    [Serializable]
    public class JiraAbsence

@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
-using JiraReporter.Domain;
-using JiraReporter.GSheets;
-using JiraReporter.JiraApi;
-using JiraReporter.JiraApi.Models;
-using JiraReporter.Reporters;
-using JiraReporter.Reporters.Writer;
-using JiraToolCheckFramework.Configuration;
-using JiraToolCheckFramework.Database;
-using JiraToolCheckFramework.Database.Mappers;
-using JiraToolCheckFramework.Gmail;
-using JiraToolCheckFramework.GSheets;
-using JiraToolCheckFramework.Reporters;
-using JiraToolCheckFramework.Sin;
+using JiraReporterCore.Domain;
+using JiraReporterCore.GSheets;
+using JiraReporterCore.JiraApi;
+using JiraReporterCore.JiraApi.Models;
+using JiraReporterCore.Reporters;
+using JiraReporterCore.Reporters.Writer;
 using Newtonsoft.Json;
+using PRJReports.Configuration;
+using PRJReports.Database;
+using PRJReports.Database.Mappers;
+using PRJReports.Gmail;
+using PRJReports.GSheets;
+using PRJReports.Reporters;
+using PRJReports.Sin;
 
-namespace JiraToolCheckFramework
+namespace PRJReports
 {
    class Program
    {

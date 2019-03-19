@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using JiraReporter.JiraApi.Models;
+using JiraReporterCore.JiraApi.Models;
 
-namespace JiraReporter.JiraApi
+namespace JiraReporterCore.JiraApi
 {
    public class JiraApiClientWithCache : JiraApiClient
    {

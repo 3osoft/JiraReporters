@@ -1,6 +1,6 @@
-﻿using JiraReporter.Domain;
+﻿using JiraReporterCore.Domain;
 
-namespace JiraToolCheckFramework.Database.Mappers
+namespace PRJReports.Database.Mappers
 {
    public class UserMapper
    {

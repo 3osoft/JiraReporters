@@ -1,6 +1,6 @@
-﻿using JiraReporter.Configuration;
+﻿using JiraReporterCore.Configuration;
 
-namespace JiraReporter.GSheets
+namespace JiraReporterCore.GSheets
 {
    public abstract class GoogleSheet
    {

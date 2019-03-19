@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using JiraReporter.JiraApi;
-using JiraReporter.JiraApi.Models;
+using JiraReporterCore.JiraApi;
+using JiraReporterCore.JiraApi.Models;
 using RestSharp;
 
-namespace JiraReporter.Reporters
+namespace JiraReporterCore.Reporters
 {
    public class PublicHolidayReporter : BaseReporter<List<PublicHoliday>>
    {

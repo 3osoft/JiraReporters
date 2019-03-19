@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using JiraReporter.JiraApi.Models;
+using JiraReporterCore.JiraApi.Models;
 using RestSharp;
 using RestSharp.Authenticators;
 
-namespace JiraReporter.JiraApi
+namespace JiraReporterCore.JiraApi
 {
 
    public class JiraApiClient

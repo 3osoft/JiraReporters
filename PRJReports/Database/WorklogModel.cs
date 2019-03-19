@@ -1,8 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using JiraReporter.JiraApi.Models;
 
-namespace JiraToolCheckFramework.Database
+namespace PRJReports.Database
 {
    public class WorklogModel
    {

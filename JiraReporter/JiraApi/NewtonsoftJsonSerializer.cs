@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using RestSharp.Serializers;
 
-namespace JiraReporter.JiraApi
+namespace JiraReporterCore.JiraApi
 {
    public class NewtonsoftJsonSerializer : ISerializer
    {

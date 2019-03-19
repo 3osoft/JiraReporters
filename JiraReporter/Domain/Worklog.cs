@@ -1,7 +1,7 @@
 ﻿using System;
-using JiraReporter.JiraApi.Models;
+using JiraReporterCore.JiraApi.Models;
 
-namespace JiraReporter.Domain
+namespace JiraReporterCore.Domain
 {
    public class Worklog
    {

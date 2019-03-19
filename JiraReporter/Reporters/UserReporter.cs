@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using JiraReporter.Configuration;
-using JiraReporter.Domain;
-using JiraReporter.GSheets;
+using JiraReporterCore.Configuration;
+using JiraReporterCore.Domain;
+using JiraReporterCore.GSheets;
 
-namespace JiraReporter.Reporters
+namespace JiraReporterCore.Reporters
 {
    public class UserReporter : BaseReporter<List<User>>
    {

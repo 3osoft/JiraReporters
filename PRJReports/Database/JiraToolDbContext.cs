@@ -1,6 +1,6 @@
 ﻿using System.Data.Entity;
 
-namespace JiraToolCheckFramework.Database
+namespace PRJReports.Database
 {
    public class JiraToolDbContext : DbContext
    {

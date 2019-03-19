@@ -2,7 +2,7 @@
 using RestSharp;
 using RestSharp.Deserializers;
 
-namespace JiraReporter.JiraApi
+namespace JiraReporterCore.JiraApi
 {
    public class DynamicJsonDeserializer : IDeserializer
    {

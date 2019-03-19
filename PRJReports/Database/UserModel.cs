@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace JiraToolCheckFramework.Database
+namespace PRJReports.Database
 {
    public class UserModel
    {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace JiraReporter.JiraApi
+namespace JiraReporterCore.JiraApi
 {
    /// <summary>
    /// This custom converter is necessary only because DateTime format accepted by Jira API is ""2015-07-31T20:02:34.976+0200".

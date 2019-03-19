@@ -9,7 +9,7 @@ using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using MimeKit;
 
-namespace JiraReporter.Gmail
+namespace JiraReporterCore.Gmail
 {
    public class GmailClient
    {

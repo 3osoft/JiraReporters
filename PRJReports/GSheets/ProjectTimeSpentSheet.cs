@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using JiraReporter.Configuration;
-using JiraReporter.GSheets;
+using JiraReporterCore.Configuration;
+using JiraReporterCore.GSheets;
 
-namespace JiraToolCheckFramework.GSheets
+namespace PRJReports.GSheets
 {
    public class ProjectTimeSpentSheet : WritableGoogleSheet<Dictionary<string, decimal>>
    {

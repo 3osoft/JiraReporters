@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace JiraReporter.Domain
+namespace JiraReporterCore.Domain
 {
    public class ToolRun
    {

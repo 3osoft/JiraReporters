@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace JiraToolCheckFramework.Sin
+namespace PRJReports.Sin
 {
    public abstract class Sinner
    {

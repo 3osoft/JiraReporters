@@ -2,7 +2,7 @@
 using System.Net;
 using RestSharp;
 
-namespace JiraReporter.JiraApi
+namespace JiraReporterCore.JiraApi
 {
    public static class RestResponseExtensions
    {

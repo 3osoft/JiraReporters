@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
-using JiraReporter.Configuration;
-using JiraReporter.Gmail;
-using JiraToolCheckFramework.Sin;
+using JiraReporterCore.Configuration;
+using JiraReporterCore.Gmail;
+using PRJReports.Sin;
 
-namespace JiraToolCheckFramework.Gmail
+namespace PRJReports.Gmail
 {
    public class SinnerGmail : WritableGmail<List<IEnumerable<Sinner>>>
    {

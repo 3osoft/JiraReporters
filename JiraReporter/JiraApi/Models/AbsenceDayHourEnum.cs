@@ -1,4 +1,4 @@
-﻿namespace JiraReporter.JiraApi.Models
+﻿namespace JiraReporterCore.JiraApi.Models
 {
    public enum AbsenceDayHourEnum
    {

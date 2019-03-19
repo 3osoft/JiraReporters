@@ -1,4 +1,4 @@
-﻿namespace JiraReporter.Reporters.Writer
+﻿namespace JiraReporterCore.Reporters.Writer
 {
    public class ReportWriter<T>
    {

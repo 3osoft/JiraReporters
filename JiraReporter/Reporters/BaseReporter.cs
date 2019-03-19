@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace JiraReporter.Reporters
+namespace JiraReporterCore.Reporters
 {
    public abstract class BaseReporter<T>
    {

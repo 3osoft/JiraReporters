@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace JiraToolCheckFramework.Database
+namespace PRJReports.Database
 {
    public class AttendanceModel
    {

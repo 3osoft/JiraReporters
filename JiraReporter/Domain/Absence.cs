@@ -1,7 +1,7 @@
 ﻿using System;
-using JiraReporter.JiraApi.Models;
+using JiraReporterCore.JiraApi.Models;
 
-namespace JiraReporter.Domain
+namespace JiraReporterCore.Domain
 {
    public class Absence
    {
@@ -16,22 +16,22 @@ namespace JiraReporter.Domain
          switch (AbsenceCategory)
          {
             case "Vacation":
-               result = JiraReporter.JiraApi.Models.AbsenceCategory.Vacation;
+               result = JiraApi.Models.AbsenceCategory.Vacation;
                break;
             case "Illness":
-               result = JiraReporter.JiraApi.Models.AbsenceCategory.Illness;
+               result = JiraApi.Models.AbsenceCategory.Illness;
                break;
             case "Doctor":
-               result = JiraReporter.JiraApi.Models.AbsenceCategory.Doctor;
+               result = JiraApi.Models.AbsenceCategory.Doctor;
                break;
             case "Doctor (Family)":
-               result = JiraReporter.JiraApi.Models.AbsenceCategory.DoctorFamily;
+               result = JiraApi.Models.AbsenceCategory.DoctorFamily;
                break;
             case "Personal leave":
-               result = JiraReporter.JiraApi.Models.AbsenceCategory.PersonalLeave;
+               result = JiraApi.Models.AbsenceCategory.PersonalLeave;
                break;
             default:
-               result = JiraReporter.JiraApi.Models.AbsenceCategory.Unknown;
+               result = JiraApi.Models.AbsenceCategory.Unknown;
                break;
          }
 

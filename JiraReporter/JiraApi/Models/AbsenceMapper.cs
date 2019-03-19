@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace JiraReporter.JiraApi.Models
+namespace JiraReporterCore.JiraApi.Models
 {
    internal static class AbsenceMapper
    {

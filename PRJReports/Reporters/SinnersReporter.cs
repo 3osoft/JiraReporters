@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JiraReporter.Reporters;
-using JiraToolCheckFramework.Sin;
+using JiraReporterCore.Reporters;
+using PRJReports.Sin;
 
-namespace JiraToolCheckFramework.Reporters
+namespace PRJReports.Reporters
 {
    public class SinnersReporter : BaseReporter<List<IEnumerable<Sinner>>>
    {

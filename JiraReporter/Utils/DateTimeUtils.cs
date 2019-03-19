@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace JiraReporter.Utils
+namespace JiraReporterCore.Utils
 {
    public class DateTimeUtils
    {

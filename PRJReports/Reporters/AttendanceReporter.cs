@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JiraReporter.Configuration;
-using JiraReporter.Domain;
-using JiraReporter.JiraApi.Models;
-using JiraReporter.Reporters;
-using JiraReporter.Utils;
-using JiraToolCheckFramework.GSheets;
+using JiraReporterCore.Configuration;
+using JiraReporterCore.Domain;
+using JiraReporterCore.JiraApi.Models;
+using JiraReporterCore.Reporters;
+using JiraReporterCore.Utils;
 
-namespace JiraToolCheckFramework.Reporters
+namespace PRJReports.Reporters
 {
    public class AttendanceReporter : BaseReporter<List<Attendance>>
    {

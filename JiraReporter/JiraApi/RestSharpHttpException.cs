@@ -1,7 +1,7 @@
 ﻿using System;
 using RestSharp;
 
-namespace JiraReporter.JiraApi
+namespace JiraReporterCore.JiraApi
 {
    public class RestSharpHttpException : Exception
    {

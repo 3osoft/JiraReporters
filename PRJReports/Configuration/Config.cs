@@ -1,8 +1,8 @@
 ﻿using System;
-using JiraReporter.Configuration;
-using JiraReporter.JiraApi;
+using JiraReporterCore.Configuration;
+using JiraReporterCore.JiraApi;
 
-namespace JiraToolCheckFramework.Configuration
+namespace PRJReports.Configuration
 {
    public class Config
    {

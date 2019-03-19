@@ -1,7 +1,7 @@
 ﻿using System;
-using JiraReporter.Domain;
+using JiraReporterCore.Domain;
 
-namespace JiraReporter.Reporters
+namespace JiraReporterCore.Reporters
 {
    public class ToolRunReporter : BaseReporter<ToolRun>
    {

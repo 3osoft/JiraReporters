@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using JiraReporter.Configuration;
-using JiraReporter.Domain;
-using JiraReporter.GSheets;
+using JiraReporterCore.Configuration;
+using JiraReporterCore.Domain;
+using JiraReporterCore.GSheets;
 
-namespace JiraToolCheckFramework.GSheets
+namespace PRJReports.GSheets
 {
    public class AttendanceGridSheet : WritableGoogleSheet<List<Attendance>>
    {

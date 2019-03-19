@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace JiraReporter.JiraApi.Models
+namespace JiraReporterCore.JiraApi.Models
 {
    [Serializable]
    public class Worklogs

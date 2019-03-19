@@ -1,6 +1,6 @@
-﻿using JiraReporter.Configuration;
+﻿using JiraReporterCore.Configuration;
 
-namespace JiraReporter.Gmail
+namespace JiraReporterCore.Gmail
 {
    public abstract class Gmail
    {

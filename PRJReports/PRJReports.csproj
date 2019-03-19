@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{8F6DE5EE-104C-41AA-9122-7BAADC642E51}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>JiraToolCheckFramework</RootNamespace>
-    <AssemblyName>JiraToolCheckFramework</AssemblyName>
+    <RootNamespace>PRJReports</RootNamespace>
+    <AssemblyName>PRJReports</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

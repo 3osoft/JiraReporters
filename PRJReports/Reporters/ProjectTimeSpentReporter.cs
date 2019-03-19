@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using JiraReporter.Reporters;
+using JiraReporterCore.Reporters;
 
-namespace JiraToolCheckFramework.Reporters
+namespace PRJReports.Reporters
 {
    public class ProjectTimeSpentReporter : BaseReporter<Dictionary<string, decimal>>
    {

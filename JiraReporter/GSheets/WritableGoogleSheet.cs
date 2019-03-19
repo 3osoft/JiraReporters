@@ -1,7 +1,7 @@
-﻿using JiraReporter.Configuration;
-using JiraReporter.Reporters.Writer;
+﻿using JiraReporterCore.Configuration;
+using JiraReporterCore.Reporters.Writer;
 
-namespace JiraReporter.GSheets
+namespace JiraReporterCore.GSheets
 {
    public abstract class WritableGoogleSheet<T> : GoogleSheet, IWritable<T>
    {

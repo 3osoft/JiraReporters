@@ -1,4 +1,4 @@
-﻿namespace JiraReporter.Configuration
+﻿namespace JiraReporterCore.Configuration
 {
    public class GmailSettings
    {

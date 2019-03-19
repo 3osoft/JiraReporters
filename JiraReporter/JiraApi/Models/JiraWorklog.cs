@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace JiraReporter.JiraApi.Models
+namespace JiraReporterCore.JiraApi.Models
 {
    [Serializable]
    public class JiraWorklog

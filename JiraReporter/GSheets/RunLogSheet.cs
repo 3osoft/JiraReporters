@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using JiraReporter.Configuration;
-using JiraReporter.Domain;
+﻿using System.Collections.Generic;
+using JiraReporterCore.Configuration;
+using JiraReporterCore.Domain;
 
-namespace JiraReporter.GSheets
+namespace JiraReporterCore.GSheets
 {
    public class RunLogSheet : WritableGoogleSheet<ToolRun>
    {

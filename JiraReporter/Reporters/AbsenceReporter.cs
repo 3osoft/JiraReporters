@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JiraReporter.Domain;
-using JiraReporter.JiraApi;
-using JiraReporter.JiraApi.Models;
-using JiraReporter.Utils;
+using JiraReporterCore.Domain;
+using JiraReporterCore.JiraApi;
+using JiraReporterCore.JiraApi.Models;
+using JiraReporterCore.Utils;
 
-namespace JiraReporter.Reporters
+namespace JiraReporterCore.Reporters
 {
    public class AbsenceReporter : BaseReporter<List<Absence>>
    {

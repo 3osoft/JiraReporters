@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using JiraReporter.Configuration;
-using JiraReporter.Domain;
+using JiraReporterCore.Configuration;
+using JiraReporterCore.Domain;
 
-namespace JiraReporter.GSheets
+namespace JiraReporterCore.GSheets
 {
    public class UserSheet : GoogleSheet
    {

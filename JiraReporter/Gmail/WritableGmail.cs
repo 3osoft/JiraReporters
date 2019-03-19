@@ -1,7 +1,7 @@
-﻿using JiraReporter.Configuration;
-using JiraReporter.Reporters.Writer;
+﻿using JiraReporterCore.Configuration;
+using JiraReporterCore.Reporters.Writer;
 
-namespace JiraReporter.Gmail
+namespace JiraReporterCore.Gmail
 {
    public abstract class WritableGmail<T> : Gmail, IWritable<T>
    {

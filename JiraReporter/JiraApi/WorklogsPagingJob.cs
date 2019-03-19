@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace JiraReporter.JiraApi
+namespace JiraReporterCore.JiraApi
 {
    public class WorklogsPagingJob : PagingJob
    {

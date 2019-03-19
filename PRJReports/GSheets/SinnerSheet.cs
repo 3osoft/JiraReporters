@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using JiraReporter.Configuration;
-using JiraReporter.GSheets;
-using JiraToolCheckFramework.Sin;
+using JiraReporterCore.Configuration;
+using JiraReporterCore.GSheets;
+using PRJReports.Sin;
 
-namespace JiraToolCheckFramework.GSheets
+namespace PRJReports.GSheets
 {
    public class SinnerSheet : WritableGoogleSheet<List<IEnumerable<Sinner>>>
    {
