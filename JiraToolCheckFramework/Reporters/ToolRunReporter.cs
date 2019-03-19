@@ -1,5 +1,6 @@
 ﻿using System;
-using JiraToolCheckFramework.Configuration;
+using JiraReporter.Configuration;
+using JiraReporter.Reporters;
 using JiraToolCheckFramework.GSheets;
 
 namespace JiraToolCheckFramework.Reporters

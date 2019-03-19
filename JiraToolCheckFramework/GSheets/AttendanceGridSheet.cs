@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using JiraToolCheckFramework.Configuration;
+using JiraReporter.Configuration;
+using JiraReporter.GSheets;
 using JiraToolCheckFramework.Database;
 
 namespace JiraToolCheckFramework.GSheets

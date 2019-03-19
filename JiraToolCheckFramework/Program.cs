@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using JiraReporter.JiraApi;
+using JiraReporter.JiraApi.Models;
 using JiraToolCheckFramework.Configuration;
 using JiraToolCheckFramework.Database;
-using JiraToolCheckFramework.JiraApi;
-using JiraToolCheckFramework.JiraApi.Models;
 using JiraToolCheckFramework.Reporters;
 using Newtonsoft.Json;
 

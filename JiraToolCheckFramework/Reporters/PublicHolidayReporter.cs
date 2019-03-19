@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using JiraToolCheckFramework.JiraApi;
-using JiraToolCheckFramework.JiraApi.Models;
+using JiraReporter.JiraApi;
+using JiraReporter.JiraApi.Models;
+using JiraReporter.Reporters;
 using RestSharp;
 
 namespace JiraToolCheckFramework.Reporters
@@ -28,7 +29,7 @@ namespace JiraToolCheckFramework.Reporters
          string publicHolidayType = "National holiday";
          List<PublicHoliday> result = new List<PublicHoliday>();
          RestClient restClient = new RestClient(new Uri("https://calendarific.com/api/v2/"));
-         restClient.AddHandler("application/json", new DynamicJsonDeserializer());
+         restClient.AddHandler("application/json", () => new DynamicJsonDeserializer());
          foreach (var year in _yearsToReport)
          {
             //?api_key={apiKey}&country=SK&year={year}

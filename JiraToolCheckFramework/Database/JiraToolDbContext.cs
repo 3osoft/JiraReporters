@@ -2,7 +2,7 @@
 
 namespace JiraToolCheckFramework.Database
 {
-   class JiraToolDbContext : DbContext
+   public class JiraToolDbContext : DbContext
    {
       public JiraToolDbContext(): base("JiraToolDbContext")
       {

@@ -43,11 +43,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HR\HrReporting.cs" />
+    <Compile Include="HR\Overtime.cs" />
+    <Compile Include="HR\RawUserData.cs" />
+    <Compile Include="HR\UserData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JiraToolCheckFramework\JiraToolCheckFramework.csproj">
+      <Project>{8F6DE5EE-104C-41AA-9122-7BAADC642E51}</Project>
+      <Name>JiraToolCheckFramework</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

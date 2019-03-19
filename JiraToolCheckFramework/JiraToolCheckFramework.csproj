@@ -88,8 +88,8 @@
     <Reference Include="Google.Apis.PlatformServices, Version=1.38.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.1.38.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Sheets.v4, Version=1.38.0.1517, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Sheets.v4.1.38.0.1517\lib\net45\Google.Apis.Sheets.v4.dll</HintPath>
+    <Reference Include="Google.Apis.Sheets.v4, Version=1.38.0.1524, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Sheets.v4.1.38.0.1524\lib\net45\Google.Apis.Sheets.v4.dll</HintPath>
     </Reference>
     <Reference Include="MimeKit, Version=2.1.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
       <HintPath>..\packages\MimeKit.2.1.3\lib\net45\MimeKit.dll</HintPath>
@@ -109,8 +109,8 @@
     <Reference Include="Npgsql.EntityFramework, Version=2.2.7.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <HintPath>..\packages\Npgsql.EntityFramework.2.2.7\lib\net45\Npgsql.EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp, Version=106.6.7.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.106.6.7\lib\net452\RestSharp.dll</HintPath>
+    <Reference Include="RestSharp, Version=106.6.9.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.6.9\lib\net452\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -131,50 +131,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\Config.cs" />
-    <Compile Include="Configuration\GmailSettings.cs" />
-    <Compile Include="Configuration\GoogleSheetsSettings.cs" />
-    <Compile Include="Gmail\GmailClient.cs" />
-    <Compile Include="GSheets\GoogleSheet.cs" />
+    <Compile Include="Database\AbsenceModel.cs" />
+    <Compile Include="Database\AttendanceModel.cs" />
+    <Compile Include="Database\JiraToolDbContext.cs" />
+    <Compile Include="Database\UserModel.cs" />
+    <Compile Include="Database\WorklogModel.cs" />
     <Compile Include="GSheets\ProjectTimeSpentSheet.cs" />
     <Compile Include="GSheets\AttendanceGridSheet.cs" />
     <Compile Include="GSheets\RunLogSheet.cs" />
     <Compile Include="GSheets\SinnersSheet.cs" />
     <Compile Include="GSheets\UserSheet.cs" />
-    <Compile Include="HR\HrReporting.cs" />
-    <Compile Include="HR\Overtime.cs" />
-    <Compile Include="HR\RawUserData.cs" />
-    <Compile Include="HR\UserData.cs" />
-    <Compile Include="JiraApi\Models\Absence.cs" />
-    <Compile Include="JiraApi\Models\AbsenceCategory.cs" />
-    <Compile Include="JiraApi\Models\AbsenceDayHourEnum.cs" />
-    <Compile Include="JiraApi\Models\AbsenceError.cs" />
-    <Compile Include="JiraApi\Models\AbsenceMapper.cs" />
-    <Compile Include="Database\AbsenceModel.cs" />
-    <Compile Include="Database\AttendanceModel.cs" />
-    <Compile Include="JiraApi\CustomFieldsConverter.cs" />
-    <Compile Include="JiraApi\DynamicJsonDeserializer.cs" />
-    <Compile Include="GSheets\GoogleSheetClient.cs" />
-    <Compile Include="JiraApi\JiraApiClient.cs" />
-    <Compile Include="JiraApi\JiraApiClientWithCache.cs" />
-    <Compile Include="JiraApi\JiraDateTimeJsonConverter.cs" />
-    <Compile Include="JiraApi\JiraSettings.cs" />
-    <Compile Include="JiraApi\NewtonsoftJsonSerializer.cs" />
-    <Compile Include="JiraApi\PagingJob.cs" />
-    <Compile Include="JiraApi\Models\PublicHoliday.cs" />
-    <Compile Include="JiraApi\RestResponseExtensions.cs" />
-    <Compile Include="JiraApi\RestSharpHttpException.cs" />
-    <Compile Include="JiraApi\Models\Timesheet.cs" />
-    <Compile Include="Database\UserModel.cs" />
-    <Compile Include="JiraApi\Models\WorkLog.cs" />
-    <Compile Include="Database\WorklogModel.cs" />
-    <Compile Include="JiraApi\Models\Worklogs.cs" />
-    <Compile Include="JiraApi\WorklogsPagingJob.cs" />
-    <Compile Include="Database\JiraToolDbContext.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reporters\AbsenceReporter.cs" />
     <Compile Include="Reporters\AttendanceReporter.cs" />
-    <Compile Include="Reporters\BaseReporter.cs" />
     <Compile Include="Reporters\ProjectTimeSpentReporter.cs" />
     <Compile Include="Reporters\PublicHolidayReporter.cs" />
     <Compile Include="Reporters\SinnersReporter.cs" />
@@ -185,7 +155,6 @@
     <Compile Include="Sin\Sinner.cs" />
     <Compile Include="Sin\TimeTrackedSinner.cs" />
     <Compile Include="Sin\WorklogCountSinner.cs" />
-    <Compile Include="Utils\DateTimeUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -217,6 +186,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JiraReporter\JiraReporter.csproj">
+      <Project>{b931cecc-36c8-4cfc-b24e-aa3fa9cf8520}</Project>
+      <Name>JiraReporter</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

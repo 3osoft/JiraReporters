@@ -1,5 +1,6 @@
 ﻿using System;
-using JiraToolCheckFramework.JiraApi;
+using JiraReporter.Configuration;
+using JiraReporter.JiraApi;
 
 namespace JiraToolCheckFramework.Configuration
 {

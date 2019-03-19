@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using JiraReporter.Configuration;
+using JiraReporter.GSheets;
 using JiraToolCheckFramework.Configuration;
 using JiraToolCheckFramework.Sin;
 

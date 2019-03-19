@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
+using JiraReporter.Configuration;
+using JiraReporter.Gmail;
+using JiraReporter.Reporters;
 using JiraToolCheckFramework.Configuration;
-using JiraToolCheckFramework.Gmail;
 using JiraToolCheckFramework.GSheets;
 using JiraToolCheckFramework.Sin;
 

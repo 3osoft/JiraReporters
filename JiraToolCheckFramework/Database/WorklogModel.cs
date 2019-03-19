@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using JiraToolCheckFramework.JiraApi.Models;
+using JiraReporter.JiraApi.Models;
 
 namespace JiraToolCheckFramework.Database
 {

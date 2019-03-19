@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JiraReporter.Configuration;
+using JiraReporter.JiraApi.Models;
+using JiraReporter.Reporters;
+using JiraReporter.Utils;
 using JiraToolCheckFramework.Configuration;
 using JiraToolCheckFramework.Database;
 using JiraToolCheckFramework.GSheets;
-using JiraToolCheckFramework.JiraApi;
-using JiraToolCheckFramework.JiraApi.Models;
-using JiraToolCheckFramework.Utils;
 
 namespace JiraToolCheckFramework.Reporters
 {
