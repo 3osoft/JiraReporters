@@ -6,9 +6,9 @@ using System.Linq;
 using JiraReporterCore.Domain;
 using JiraReporterCore.GSheets;
 using JiraReporterCore.JiraApi;
-using JiraReporterCore.JiraApi.Models;
 using JiraReporterCore.Reporters;
 using JiraReporterCore.Reporters.Writer;
+using JiraReporterCore.Utils;
 using Newtonsoft.Json;
 using PRJReports.Configuration;
 using PRJReports.Database;
@@ -41,7 +41,7 @@ namespace PRJReports
 
          PublicHolidayReporter publicHolidayReporter = new PublicHolidayReporter(config.PublicHolidayApiKey, Enumerable.Range(2016, till.Year - 2016 + 1).ToList());
 
-         var shouldReportSinnersToday = !IsNonWorkingDay(DateTime.Now, publicHolidayReporter.Report());
+         var shouldReportSinnersToday = !DateTimeUtils.IsNonWorkingDay(publicHolidayReporter.Report(), DateTime.Now);
          
          Logger.Info("Running for date range from {0} to {1}", from, till);
 
@@ -55,7 +55,7 @@ namespace PRJReports
 
          AbsenceReporter absenceReporter = new AbsenceReporter(publicHolidayReporter, userReporter, client);
 
-         AttendanceReporter attendanceReporter = new AttendanceReporter(userReporter, absenceReporter, currentRangeWorklogsReporter, from, till, config.AttendanceGridSheetSettings);
+         AttendanceReporter attendanceReporter = new AttendanceReporter(userReporter, absenceReporter, currentRangeWorklogsReporter, from, till);
 
          var attendanceReportWriter = new ReportWriter<List<Attendance>>(attendanceReporter, new AttendanceGridSheet(config.AttendanceGridSheetSettings));
          attendanceReportWriter.Write();
@@ -65,14 +65,14 @@ namespace PRJReports
 
          if (shouldReportSinnersToday)
          {
-            var dateOfSin = GetLastWorkDay(publicHolidayReporter, DateTime.Now.Date.AddDays(-1));
+            var dateOfSin = DateTimeUtils.GetLastWorkDay(publicHolidayReporter.Report(), DateTime.Now.Date.AddDays(-1));
             SinnersReporter sinnersReporter = new SinnersReporter(userReporter, currentRangeWorklogsReporter, attendanceReporter, dateOfSin);
 
-            var gmailSinnerReportWriter = new ReportWriter<List<IEnumerable<Sinner>>>(sinnersReporter, new SinnerSheet(config.SinnersSheetSettings));
-            gmailSinnerReportWriter.Write();
-
-            var gSheetSinnerReportWriter = new ReportWriter<List<IEnumerable<Sinner>>>(sinnersReporter, new SinnerGmail(config.SinnerNotifierGmailSettings, dateOfSin));
+            var gSheetSinnerReportWriter = new ReportWriter<List<IEnumerable<Sinner>>>(sinnersReporter, new SinnerSheet(config.SinnersSheetSettings));
             gSheetSinnerReportWriter.Write();
+
+            var gmailSinnerReportWriter = new ReportWriter<List<IEnumerable<Sinner>>>(sinnersReporter, new SinnerGmail(config.SinnerNotifierGmailSettings, dateOfSin));
+            gmailSinnerReportWriter.Write();
          }
          else
          {
@@ -102,25 +102,6 @@ namespace PRJReports
          toolRunWriter.Write();
 
          Logger.Info("Tool run finished");
-      }
-
-      private static DateTime GetLastWorkDay(PublicHolidayReporter holidayReporter, DateTime fromDate)
-      {
-         var currentDate = fromDate.Date;
-         var holidays = holidayReporter.Report();
-
-         while (IsNonWorkingDay(currentDate, holidays))
-         {
-            currentDate = currentDate.AddDays(-1);
-         }
-
-         return currentDate;
-      }
-
-      private static bool IsNonWorkingDay(DateTime date, List<PublicHoliday> holidays)
-      {
-         return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday ||
-                holidays.Select(x => x.Date).Contains(date.Date);
       }
 
       private static void ClearDatabase(JiraToolDbContext ctx)

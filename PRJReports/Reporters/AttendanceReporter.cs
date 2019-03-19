@@ -18,16 +18,14 @@ namespace PRJReports.Reporters
       private readonly WorklogsReporter _worklogsReporter;
       private readonly DateTime _from;
       private readonly DateTime _till;
-      private readonly GoogleSheetsSettings _settings;
 
-      public AttendanceReporter(UserReporter userReporter, AbsenceReporter absenceReporter, WorklogsReporter worklogsReporter, DateTime from, DateTime till, GoogleSheetsSettings settings)
+      public AttendanceReporter(UserReporter userReporter, AbsenceReporter absenceReporter, WorklogsReporter worklogsReporter, DateTime from, DateTime till)
       {
          _userReporter = userReporter;
          _absenceReporter = absenceReporter;
          _worklogsReporter = worklogsReporter;
          _from = from;
          _till = till;
-         _settings = settings;
       }
 
       protected override List<Attendance> CalculateReportData()
