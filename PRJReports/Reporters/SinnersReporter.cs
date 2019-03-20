@@ -31,27 +31,27 @@ namespace PRJReports.Reporters
          var workLogs = _worklogsReporter.Report();
          var attendance = _attendanceReporter.Report();
 
-         var worklogCountSinners = users.Join(workLogs, u => u.UserName, w => w.User, (u, w) => new
-         {
-            u.UserName,
-            u.IsTracking,
-            w.Date,
-            w.Hours
-         })
-            .Where(uw => uw.Date.Equals(_dateOfSin) && uw.IsTracking)
-            .GroupBy(uw => uw.UserName)
-            .Select(guw =>
-               new WorklogCountSinner
-               {
-                  TotalHours = guw.Sum(x => x.Hours),
-                  WorklogCount = guw.Count(),
-                  SinDate = _dateOfSin,
-                  SinnerLogin = guw.Key
-               })
-            .Where(wcs => wcs.WorklogCount < WorklogCountSinner.CountThreshold);
+         //var worklogCountSinners = users.Join(workLogs, u => u.UserName, w => w.User, (u, w) => new
+         //{
+         //   u.UserName,
+         //   u.IsTracking,
+         //   w.Date,
+         //   w.Hours
+         //})
+         //   .Where(uw => uw.Date.Equals(_dateOfSin) && uw.IsTracking)
+         //   .GroupBy(uw => uw.UserName)
+         //   .Select(guw =>
+         //      new WorklogCountSinner
+         //      {
+         //         TotalHours = guw.Sum(x => x.Hours),
+         //         WorklogCount = guw.Count(),
+         //         SinDate = _dateOfSin,
+         //         SinnerLogin = guw.Key
+         //      })
+         //   .Where(wcs => wcs.WorklogCount < WorklogCountSinner.CountThreshold);
 
          var longWorklogSinners = workLogs
-            .Where(x => x.Date.Equals(_dateOfSin) && x.Hours > LongWorklogSinner.LongWorklogThreshold)
+            .Where(x => x.Date.Equals(_dateOfSin) && x.Hours >= LongWorklogSinner.LongWorklogThreshold)
             .Join(users, w => w.User, u => u.UserName, (w, u) => new { w.Hours, w.User, u.IsTracking })
             .Where(x => x.IsTracking)
             .Select(x => new LongWorklogSinner
@@ -76,11 +76,22 @@ namespace PRJReports.Reporters
                SinDate = _dateOfSin
             });
 
+         var noTimeTrackedSinners = attendance
+            .Where(x => x.Date.Equals(_dateOfSin) && x.TotalHours == 0)
+            .Join(users, a => a.User, u => u.UserName,
+               (a, u) => new { a.User,u.IsTracking })
+            .Where(x => x.IsTracking)
+            .Select(x => new NoTimeTrackedSinner
+            {
+               SinnerLogin = x.User,
+               SinDate = _dateOfSin
+            });
+
          var sinners = new List<IEnumerable<Sinner>>
          {
             longWorklogSinners,
             timeTrackedSinners,
-            worklogCountSinners
+            noTimeTrackedSinners
          };
 
          return sinners;

@@ -21,8 +21,10 @@ namespace PRJReports.Gmail
       {
          var fromAddress = new MailAddress(Settings.FromAddress, Settings.FromDisplayName);
          var toAddress = new MailAddress(Settings.ToAddress, Settings.ToDisplayName);
-         string subject = $"Sinners for {_dateOfSin.Date:d}";
-         string body = GetMailBodyForSinners(data);
+         var sinsEvaluator = new SinsEvaluator();
+         var canWeHaveAMeme = sinsEvaluator.CanWeHaveAMeme(data);
+         var subject = $"Validacia worklogov za {_dateOfSin.Date:d}";
+         var body = GetMailBodyForSinners(data, canWeHaveAMeme);
 
          using (var message = new MailMessage(fromAddress, toAddress)
          {
@@ -37,7 +39,7 @@ namespace PRJReports.Gmail
          }
       }
 
-      private string GetMailBodyForSinners(List<IEnumerable<Sinner>> sinners)
+      private string GetMailBodyForSinners(List<IEnumerable<Sinner>> sinners, bool meme)
       {
          StringBuilder resultBuilder = new StringBuilder();
 
@@ -60,6 +62,15 @@ namespace PRJReports.Gmail
                   resultBuilder.AppendLine("<br>");
                }
             }
+
+            resultBuilder.AppendLine("<h3>");
+            resultBuilder.AppendLine("Za tento datum");
+
+            resultBuilder.AppendLine(meme ? " treba " : " netreba ");
+
+            resultBuilder.AppendLine("poslat meme!");
+            resultBuilder.AppendLine("</h3>");
+            resultBuilder.AppendLine("<br>");
          }
          else
          {

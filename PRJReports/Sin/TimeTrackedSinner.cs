@@ -7,7 +7,7 @@ namespace PRJReports.Sin
       public const decimal LowHoursThreshold = 6;
       public const decimal HighHoursThreshold = 10;
 
-      public override string SinString => "Malo/Vela hodin (trackovane, absencia, celkom)";
+      public override string SinString => "malo/vela hodin (trackovane, absencia, celkom)";
 
       public decimal TimeTracked { get; set; }
       public decimal Absence { get; set; }

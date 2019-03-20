@@ -5,7 +5,7 @@ namespace PRJReports.Sin
    public class WorklogCountSinner : Sinner
    {
       public const int CountThreshold = 2;
-      public override string SinString => "Malo worklogov (pocet worklogov, celkovy cas)";
+      public override string SinString => "malo worklogov (pocet worklogov, celkovy cas)";
       public int WorklogCount { get; set; }
       public decimal TotalHours { get; set; }
 
