@@ -146,7 +146,6 @@
     <Compile Include="GSheets\SinnerSheet.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reporters\AttendanceReporter.cs" />
     <Compile Include="Reporters\ProjectTimeSpentReporter.cs" />
     <Compile Include="Reporters\SinnersReporter.cs" />
     <Compile Include="Sin\LongWorklogSinner.cs" />

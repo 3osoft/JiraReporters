@@ -9,13 +9,10 @@
       public string CostCenter { get; set; }
       public int WorkHoursInMonth { get; set; }
       public int Month { get; set; }
+      public int Year { get; set; }
       public decimal Absences { get; set; }
       public decimal HoursWorked { get; set; }
-      public decimal OvertimeHours { get; set; }
+      public decimal OvertimeHours => (HoursWorked + Absences) - WorkHoursInMonth;
 
-      public void CalculateOvertime()
-      {
-         OvertimeHours = (HoursWorked + Absences) - WorkHoursInMonth;
-      }
    }
 }

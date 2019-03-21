@@ -20,34 +20,76 @@ namespace HRReports.GSheets
          IList<IList<object>> userSheetData = Client.GetSheetData(Settings.SheetName);
          var users = userSheetData.Skip(UserSheetRowsToSkip).Select(x => new RawUserData
          {
-            RecordDate = (DateTime) x[0],
+            RecordDate = TryParseDate(x[0]).Value,
             UserData = new UserData
             {
                Login = (string) x[1],
                Initials = (string) x[2],
                FirstName = (string) x[3],
                LastName = (string) x[4],
-               IsTracking = int.Parse((string)x[5]) == 1,
+               IsTracking = TryParseBool(x[5]),
                Title = (string) x[6],
                Position = (string) x[7],
-               StartDate = DateTime.Parse((string)x[8]),
-               EndOfProbationPeriod = DateTime.Parse((string)x[9]),
-               ContractValidityDate = DateTime.Parse((string)x[10]),
-               TerminationDate = DateTime.Parse((string)x[11]),
+               StartDate = TryParseDate(x[8]),
+               EndOfProbationPeriod = TryParseDate(x[9]),
+               ContractValidityDate = TryParseDate(x[10]),
+               TerminationDate = TryParseDate(x[11]),
                ContractType = (string) x[12],
                CostCenter = (string) x[13],
-               PersonalDataConfirmation = int.Parse((string)x[14]) == 1,
-               Salary = (decimal?) x[15],
-               Rate = (decimal?) x[16],
+               PersonalDataConfirmation = TryParseBool(x[14]),
+               Salary = TryParseDecimal(x[15]),
+               Rate = TryParseDecimal(x[16]),
                PhoneNumber = (string) x[17],
                ICEPhoneNumber = (string) x[18],
-               DateOfBirth = DateTime.Parse((string)x[19]),
+               DateOfBirth = TryParseDate(x[19]),
                Benefit = (string) x[20],
                Note = (string) x[21]
             }
          }).ToList();
 
          return users;
+      }
+
+      private DateTime? TryParseDate(object o)
+      {
+         DateTime? result = null;
+
+         var objectString = (string) o;
+
+         if (DateTime.TryParse(objectString, out var value))
+         {
+            result = value;
+         }
+
+         return result;
+      }
+
+      private decimal? TryParseDecimal(object o)
+      {
+         decimal? result = null;
+
+         var objectString = (string) o;
+
+         if (decimal.TryParse(objectString, out var value))
+         {
+            result = value;
+         }
+
+         return result;
+      }
+
+      private bool? TryParseBool(object o)
+      {
+         bool? result = null;
+
+         var objectString = (string)o;
+
+         if (int.TryParse(objectString, out var value))
+         {
+            result = value == 1;
+         }
+
+         return result;
       }
    }
 }

@@ -8,9 +8,9 @@ namespace JiraReporterCore.GSheets
    public class UserSheet : GoogleSheet
    {
       private const int UserSheetRowsToSkip = 1;
-      private const int UserSheetLoginColumnIndex = 1;
-      private const int UserSheetInitialsColumnIndex = 2;
-      private const int UserIsTrackingColumnIndex = 5;
+      private const int UserSheetLoginColumnIndex = 0;
+      private const int UserSheetInitialsColumnIndex = 1;
+      private const int UserIsTrackingColumnIndex = 4;
 
       public UserSheet(GoogleSheetsSettings settings) : base(settings)
       {

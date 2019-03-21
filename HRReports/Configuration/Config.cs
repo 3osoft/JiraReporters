@@ -1,5 +1,4 @@
-﻿using System;
-using JiraReporterCore.Configuration;
+﻿using JiraReporterCore.Configuration;
 using JiraReporterCore.JiraApi;
 
 namespace HRReports.Configuration
@@ -10,5 +9,7 @@ namespace HRReports.Configuration
       public JiraSettings JiraSettings { get; set; }
       public GoogleSheetsSettings RawUsersSheetSettings { get; set; }
       public GoogleSheetsSettings CurrentUsersSheetSettings { get; set; }
+      public GoogleSheetsSettings OvertimeSheetSettings { get; set; }
+      public string PublicHolidayApiKey { get; set; }
    }
 }

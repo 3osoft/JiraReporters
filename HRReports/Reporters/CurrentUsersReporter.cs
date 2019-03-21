@@ -28,7 +28,7 @@ namespace HRReports.Reporters
          var freshestUserData = groupedUserData.Select(x => x.OrderByDescending(u => u.RecordDate).FirstOrDefault()?.UserData).ToList();
 
          var activeUsers = freshestUserData
-            .Where(x => !x.TerminationDate.HasValue || x.TerminationDate.Value.Date < DateTime.Now.Date).ToList();
+            .Where(x => !x.TerminationDate.HasValue || x.TerminationDate.Value.Date > DateTime.Now.Date).ToList();
 
          Logger.Info("Found {0} distinct users, {1} active ones", freshestUserData.Count(), activeUsers.Count);
 

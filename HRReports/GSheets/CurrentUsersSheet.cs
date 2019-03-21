@@ -11,8 +11,10 @@ namespace HRReports.GSheets
       private static readonly string[] Headers =
       {
          "Login",
+         "Inicialy",
          "Meno",
          "Priezvisko",
+         "IsTracking",
          "Pozícia",
          "Dátum nástupu",
          "Zmluvá platná do",
@@ -51,19 +53,21 @@ namespace HRReports.GSheets
          return new List<object>
          {
             data.Login,
+            data.Initials,
             data.FirstName,
             data.LastName,
+            data.IsTracking.HasValue && data.IsTracking.Value ? 1 : 0,
             data.Position,
             data.StartDate?.ToShortDateString(),
             data.ContractValidityDate?.ToShortDateString(),
             data.ContractType,
             data.CostCenter,
-            data.PersonalDataConfirmation,
+            data.PersonalDataConfirmation.HasValue && data.PersonalDataConfirmation.Value ? 1 : 0,
             data.Salary,
             data.Rate,
             data.PhoneNumber,
             data.ICEPhoneNumber,
-            data.DateOfBirth,
+            data.DateOfBirth?.ToShortDateString(),
             data.Benefit,
             data.Note
          };

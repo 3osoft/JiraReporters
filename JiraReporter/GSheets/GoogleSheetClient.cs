@@ -75,6 +75,52 @@ namespace JiraReporterCore.GSheets
          var response = request.Execute();
       }
 
+      public void MakeSheetExistAndVisible(string sheetName)
+      {
+         var spreadsheets = Service.Spreadsheets.Get(SheetId).Execute();
+         var sheet = spreadsheets.Sheets.FirstOrDefault(x => x.Properties.Title == sheetName);
+
+         if (sheet == null)
+         {
+            AddSheetRequest request = new AddSheetRequest
+            {
+               Properties = new SheetProperties
+               {
+                  Hidden = false,
+                  Title = sheetName
+
+               }
+            };
+
+            var batchUpdateSpreadsheetRequest = new BatchUpdateSpreadsheetRequest
+            {
+               Requests = new List<Request> { new Request { AddSheet = request } }
+            };
+
+            Service.Spreadsheets.BatchUpdate(batchUpdateSpreadsheetRequest, SheetId).Execute();
+
+         }
+         else
+         {
+            if (sheet.Properties.Hidden.HasValue && sheet.Properties.Hidden.Value)
+            {
+               var newProperties = sheet.Properties;
+               newProperties.Hidden = false;
+               UpdateSheetPropertiesRequest request = new UpdateSheetPropertiesRequest
+               {
+                  Properties = newProperties,
+                  Fields = "*"
+               };
+               var batchUpdateSpreadsheetRequest = new BatchUpdateSpreadsheetRequest
+               {
+                  Requests = new List<Request> {new Request {UpdateSheetProperties = request}}
+               };
+
+               Service.Spreadsheets.BatchUpdate(batchUpdateSpreadsheetRequest, SheetId).Execute();
+            }
+         }
+      }
+
       public void ClearSheet(string sheetName)
       {
          ClearValuesRequest requestBody = new ClearValuesRequest();
@@ -116,7 +162,7 @@ namespace JiraReporterCore.GSheets
             AddConditionalFormatRule = new AddConditionalFormatRuleRequest
             {
                Rule = conditionalFormatRule
-            },
+            }
 
          };
 
