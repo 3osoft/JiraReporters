@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HRReports.HR
+namespace HRReports.Domain
 {
    public class RawUserData
    {

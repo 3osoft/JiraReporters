@@ -1,4 +1,4 @@
-﻿namespace HRReports.HR
+﻿namespace HRReports.Domain
 {
    public class Overtime
    {
