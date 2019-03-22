@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Net.Mail;
+using System.Net.Mime;
+using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
@@ -8,6 +11,7 @@ using Google.Apis.Gmail.v1.Data;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using MimeKit;
+using Org.BouncyCastle.Utilities;
 
 namespace JiraReporterCore.Gmail
 {
@@ -47,10 +51,18 @@ namespace JiraReporterCore.Gmail
       public void SendMail(MailMessage mail)
       {
          var mimeMessage = MimeMessage.CreateFromMailMessage(mail);
+         string mimeMessageString;
+         using (MemoryStream memoryStream = new MemoryStream())
+         {
+            StreamReader reader = new StreamReader(memoryStream, Encoding.UTF8);
+            mimeMessage.WriteTo(memoryStream);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            mimeMessageString = reader.ReadToEnd();
+         }
 
          var result = Service.Users.Messages.Send(new Message
          {
-            Raw = Base64UrlEncode(mimeMessage.ToString())
+            Raw = Base64UrlEncode(mimeMessageString)
          }, mail.From.Address).Execute();
       }
 
@@ -61,7 +73,7 @@ namespace JiraReporterCore.Gmail
          return Convert.ToBase64String(inputBytes)
             .Replace('+', '-')
             .Replace('/', '_')
-            .Replace("=", "");
+            .TrimEnd('=');
       }
    }
 }

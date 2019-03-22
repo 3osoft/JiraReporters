@@ -30,7 +30,7 @@ namespace HRReports.Reporters
          var activeUsers = freshestUserData
             .Where(x => !x.TerminationDate.HasValue || x.TerminationDate.Value.Date > DateTime.Now.Date).ToList();
 
-         Logger.Info("Found {0} distinct users, {1} active ones", freshestUserData.Count(), activeUsers.Count);
+         Logger.Info("Found {0} distinct users, {1} active ones", freshestUserData.Count, activeUsers.Count);
 
          return activeUsers;
       }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using HRReports.Alerts;
 using HRReports.Configuration;
 using HRReports.Domain;
+using HRReports.Gmail;
 using HRReports.GSheets;
 using HRReports.Reporters;
 using JiraReporterCore.JiraApi;
@@ -43,6 +45,17 @@ namespace HRReports
          CalculateMonthlyReports(currentUsersReporter, previousMonthStart, previousMonthEnd, config);
          CalculateMonthlyReports(currentUsersReporter, currentMonthStart, currentDate, config);
          
+
+         SendAlerts(currentUsersReporter, currentDate, config);
+      }
+
+      private static void SendAlerts(CurrentUsersReporter currentUsersReporter, DateTime currentDate, Config config)
+      {
+         var userDataAlertReporter = new UserDataAlertReporter(currentUsersReporter, currentDate);
+
+         var userDataAlertWriter = new ReportWriter<List<BaseAlert>>(userDataAlertReporter, new HrAlertGmail(config.HrAlertGmailSettings, currentDate));
+
+         userDataAlertWriter.Write();
       }
 
       private static void CalculateMonthlyReports(CurrentUsersReporter currentUsersReporter, DateTime start, DateTime end, Config config)
