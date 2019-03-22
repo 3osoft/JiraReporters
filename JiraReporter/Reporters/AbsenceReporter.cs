@@ -36,7 +36,6 @@ namespace JiraReporterCore.Reporters
       private static List<Absence> ConverJiraAbsencesToDomainAbsences(List<JiraAbsence> absences, List<PublicHoliday> holidays)
       {
          List<Absence> result = new List<Absence>();
-         List<AbsenceError> errors = new List<AbsenceError>();
 
          foreach (var absence in absences)
          {
@@ -51,16 +50,6 @@ namespace JiraReporterCore.Reporters
 
             var isOneDayAbsence = absence.EndDate.Date == absence.StartDate.Date;
 
-            if (isOneDayAbsence && totalAbsenceDuration > WorkDayHours)
-            {
-               errors.Add(new AbsenceError
-               {
-                  JiraAbsence = absence,
-                  AbsenceErrorType = AbsenceErrorType.OneDayWithDurationOverWorkday
-               });
-               //throw new Exception($"JiraAbsence {jiraAbsence.IssueKey} is for the same day with duration {totalAbsenceDuration}");
-            }
-
             bool hasPartialDayAtStart = false;
             bool hasPartialDayAtEnd = false;
 
@@ -71,35 +60,11 @@ namespace JiraReporterCore.Reporters
                hasPartialDayAtEnd = absence.EndDate.Hour < 17;
             }
 
-            if (hasPartialDayAtStart && hasPartialDayAtEnd)
-            {
-
-               errors.Add(new AbsenceError
-               {
-                  JiraAbsence = absence,
-                  AbsenceErrorType = AbsenceErrorType.PartialAtBothEnds
-               });
-
-               //throw new Exception($"JiraAbsence {jiraAbsence.IssueKey} has partial days at both start and end!");
-            }
-
             foreach (var currentDay in DateTimeUtils.EachDay(absence.StartDate.Date, absence.EndDate.Date))
             {
                if (currentDay.DayOfWeek != DayOfWeek.Saturday && currentDay.DayOfWeek != DayOfWeek.Sunday && !holidays.Select(x => x.Date).Contains(currentDay))
                {
                   decimal newModelHours;
-
-                  if (remainingAbsenceDuration < 0)
-                  {
-
-                     errors.Add(new AbsenceError
-                     {
-                        JiraAbsence = absence,
-                        AbsenceErrorType = AbsenceErrorType.MoreHoursInCalendarThanInDuration
-                     });
-
-                     //throw new Exception($"More than all hours were trying to be used in jiraAbsence {jiraAbsence.IssueKey}");
-                  }
 
                   if (hasPartialDayAtStart && currentDay == absence.StartDate.Date)
                   {
@@ -131,25 +96,6 @@ namespace JiraReporterCore.Reporters
                }
 
             }
-            if (remainingAbsenceDuration != 0)
-            {
-               errors.Add(new AbsenceError
-               {
-                  JiraAbsence = absence,
-                  AbsenceErrorType = AbsenceErrorType.UnusedOrNoRemainingDuration
-               });
-
-               //throw new Exception($"Not all hours from jiraAbsence {jiraAbsence.IssueKey} were used");
-            }
-         }
-
-         if (errors.Any())
-         {
-            var errorString = string.Join(Environment.NewLine,
-               errors.Select(x => $"{x.JiraAbsence.IssueKey} {x.AbsenceErrorType}"));
-
-            Logger.Warn("Found {0} errors in absences!", errors.Count);
-            Logger.Warn(errorString);
          }
 
          return result;

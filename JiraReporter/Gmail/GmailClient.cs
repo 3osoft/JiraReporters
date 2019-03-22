@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Net.Mail;
-using System.Net.Mime;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using Google.Apis.Auth.OAuth2;
@@ -11,7 +9,6 @@ using Google.Apis.Gmail.v1.Data;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using MimeKit;
-using Org.BouncyCastle.Utilities;
 
 namespace JiraReporterCore.Gmail
 {

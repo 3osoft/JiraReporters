@@ -15,5 +15,7 @@ namespace JiraReporterCore.JiraApi.Models
       public decimal Duration { get; set; }
       public AbsenceDayHourEnum DurationType { get; set; }
       public string AbsenceCategory { get; set; }
+      public string JiraBaseAddress { get; set; }
+      public string IssueLink => $"{JiraBaseAddress}/browse/{IssueKey}";
    }
 }

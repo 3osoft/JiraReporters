@@ -17,9 +17,11 @@ namespace JiraReporterCore.JiraApi
       private readonly ConcurrentDictionary<string, dynamic> _issuesCache = new ConcurrentDictionary<string, dynamic>();
 
       private readonly RestClient _restClient;
+      private readonly string _jiraBaseUrl;
 
       public JiraApiClient(JiraSettings jiraSettings)
       {
+         _jiraBaseUrl = jiraSettings.BaseUrl.AbsoluteUri;
          _restClient = new RestClient(new Uri(jiraSettings.BaseUrl, "rest/api/2"))
          {
             Authenticator = new HttpBasicAuthenticator(jiraSettings.Login, jiraSettings.Password)
@@ -205,7 +207,7 @@ namespace JiraReporterCore.JiraApi
          {
             foreach (var issue in item.issues)
             {
-               result.Add(AbsenceMapper.MapAbsence(issue, userNameInitialsDictionary));
+               result.Add(AbsenceMapper.MapAbsence(issue, userNameInitialsDictionary, _jiraBaseUrl));
             }
          }
 
