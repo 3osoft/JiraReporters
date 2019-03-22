@@ -11,6 +11,7 @@ namespace HRReports.Configuration
       public GoogleSheetsSettings CurrentUsersSheetSettings { get; set; }
       public GoogleSheetsSettings OvertimeSheetSettings { get; set; }
       public GoogleSheetsSettings SalaryDataSheetSettings { get; set; }
+      public GoogleSheetsSettings FoodStampSheetSettings { get; set; }
       public string PublicHolidayApiKey { get; set; }
    }
 }

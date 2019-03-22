@@ -47,7 +47,8 @@ namespace WorklogErrorNotifier
          var client = new JiraApiClient(config.JiraSettings);
          var userReporter = new UserReporter(config.UsersSheetSettings);
          var publicHolidayReporter = new PublicHolidayReporter(config.PublicHolidayApiKey, new List<int> {2019});
-         var absenceReporter = new AbsenceReporter(publicHolidayReporter, userReporter, client);
+         var jiraAbsenceReporter = new JiraAbsenceReporter(userReporter, client);
+         var absenceReporter = new AbsenceReporter(publicHolidayReporter, jiraAbsenceReporter);
 
          foreach (var date in DateTimeUtils.EachDay(startDate, endDate))
          {

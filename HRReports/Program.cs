@@ -71,12 +71,15 @@ namespace HRReports
 
          var overtimeReporter = new OvertimeReporter(attendanceReporter, currentUsersReporter, workHoursReporter, year, month);
          var salaryDataReporter = new SalaryDataReporter(currentUsersReporter, attendanceReporter, jiraAbsenceReporter, year, month);
+         var foodStampReporter = new FoodStampReporter(workHoursReporter, absenceReporter, currentUsersReporter, year, month);
 
          var overtimeWriter = new ReportWriter<List<Overtime>>(overtimeReporter, new OvertimeSheet(config.OvertimeSheetSettings, monthlySheetsPrefix));
          var salaryDataWriter = new ReportWriter<List<SalaryData>>(salaryDataReporter, new SalaryDataSheet(config.SalaryDataSheetSettings, monthlySheetsPrefix));
+         var foodStampWriter = new ReportWriter<List<FoodStampData>>(foodStampReporter, new FoodStampSheet(config.FoodStampSheetSettings, monthlySheetsPrefix));
 
          overtimeWriter.Write();
          salaryDataWriter.Write();
+         foodStampWriter.Write();
       }
    }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using HRReports.Domain;
 using JiraReporterCore.JiraApi.Models;
 using JiraReporterCore.Reporters;
@@ -10,6 +9,8 @@ namespace HRReports.Reporters
 {
    public class SalaryDataReporter : BaseReporter<List<SalaryData>>
    {
+      private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
       private static readonly ContractType[] SalariedContractTypes =
          {ContractType.Employee, ContractType.PartTimeEmployee};
 
@@ -32,10 +33,14 @@ namespace HRReports.Reporters
 
       protected override List<SalaryData> CalculateReportData()
       {
+         Logger.Info("Calculating salary data");
          var jiraAbsences = _jiraAbsenceReporter.Report();
 
          var users = _currentUsersReporter.Report();
          var salariedUsers = users.Where(x => SalariedContractTypes.Contains(x.GetContractType()));
+
+         Logger.Info("Found {0} salaried users", salariedUsers.Count());
+
          var relevantAttendance = _attendanceReporter.Report()
             .Where(x => x.Date.Year == _year && x.Date.Month == _month)
             .GroupBy(x => x.User)

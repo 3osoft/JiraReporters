@@ -78,8 +78,10 @@
   <ItemGroup>
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Domain\ContractType.cs" />
+    <Compile Include="Domain\FoodStampData.cs" />
     <Compile Include="Domain\SalaryData.cs" />
     <Compile Include="GSheets\CurrentUsersSheet.cs" />
+    <Compile Include="GSheets\FoodStampSheet.cs" />
     <Compile Include="GSheets\MonthlyHrReportSheet.cs" />
     <Compile Include="GSheets\OvertimeSheet.cs" />
     <Compile Include="GSheets\RawUserDataSheet.cs" />
@@ -90,6 +92,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reporters\CurrentUsersReporter.cs" />
+    <Compile Include="Reporters\FoodStampReporter.cs" />
     <Compile Include="Reporters\MonthWorkHoursReporter.cs" />
     <Compile Include="Reporters\OvertimeReporter.cs" />
     <Compile Include="Reporters\RawUserDataReporter.cs" />
