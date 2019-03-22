@@ -10,6 +10,7 @@ namespace HRReports.Configuration
       public GoogleSheetsSettings RawUsersSheetSettings { get; set; }
       public GoogleSheetsSettings CurrentUsersSheetSettings { get; set; }
       public GoogleSheetsSettings OvertimeSheetSettings { get; set; }
+      public GoogleSheetsSettings SalaryDataSheetSettings { get; set; }
       public string PublicHolidayApiKey { get; set; }
    }
 }

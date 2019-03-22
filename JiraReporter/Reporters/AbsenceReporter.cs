@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using JiraReporterCore.Domain;
-using JiraReporterCore.JiraApi;
 using JiraReporterCore.JiraApi.Models;
 using JiraReporterCore.Utils;
 
@@ -13,36 +12,25 @@ namespace JiraReporterCore.Reporters
       private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
       private const int WorkDayHours = 8;
 
-      private readonly List<string> _absenceStatusesToBeIgnored;
-      private readonly UserReporter _userReporter;
-      private readonly JiraApiClient _jiraApiClient;
       private readonly PublicHolidayReporter _publicHolidayReporter;
+      private readonly JiraAbsenceReporter _jiraAbsenceReporter;
 
-      public AbsenceReporter(PublicHolidayReporter publicHolidayReporter, UserReporter userReporter, JiraApiClient jiraApiClient)
+      public AbsenceReporter(PublicHolidayReporter publicHolidayReporter, JiraAbsenceReporter jiraAbsenceReporter)
       {
          _publicHolidayReporter = publicHolidayReporter;
-         _jiraApiClient = jiraApiClient;
-         _userReporter = userReporter;
-         _absenceStatusesToBeIgnored = new List<string>
-         {
-            "Canceled",
-            "Rejected"
-         };
+         _jiraAbsenceReporter = jiraAbsenceReporter;
       }
 
       protected override List<Absence> CalculateReportData()
       {
-         Logger.Info("Getting absences");
+         Logger.Info("Calculating absences");
+         var jiraAbsences = _jiraAbsenceReporter.Report();
 
-         var initialsDictionary = _userReporter.Report().ToDictionary(x => x.Initials, x => x.UserName);
-         var allStatusAbsences = _jiraApiClient.GetAbsences(initialsDictionary).ToList();
-         var absences = allStatusAbsences.Where(x => !_absenceStatusesToBeIgnored.Contains(x.Status)).ToList();
-
-         Logger.Info("Found {0} absences in all status, {1} in usable status", allStatusAbsences.Count, absences.Count);
-         
          var holidays = _publicHolidayReporter.Report();
+         var absences = ConverJiraAbsencesToDomainAbsences(jiraAbsences, holidays);
 
-         return ConverJiraAbsencesToDomainAbsences(absences, holidays);
+         Logger.Info("Calculated {0} domain absences from {1} jira absences", absences.Count, jiraAbsences.Count);
+         return absences;
       }
 
       private static List<Absence> ConverJiraAbsencesToDomainAbsences(List<JiraAbsence> absences, List<PublicHoliday> holidays)

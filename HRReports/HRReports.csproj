@@ -77,18 +77,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\Config.cs" />
+    <Compile Include="Domain\ContractType.cs" />
+    <Compile Include="Domain\SalaryData.cs" />
     <Compile Include="GSheets\CurrentUsersSheet.cs" />
+    <Compile Include="GSheets\MonthlyHrReportSheet.cs" />
     <Compile Include="GSheets\OvertimeSheet.cs" />
     <Compile Include="GSheets\RawUserDataSheet.cs" />
     <Compile Include="Domain\Overtime.cs" />
     <Compile Include="Domain\RawUserData.cs" />
     <Compile Include="Domain\UserData.cs" />
+    <Compile Include="GSheets\SalaryDataSheet.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reporters\CurrentUsersReporter.cs" />
     <Compile Include="Reporters\MonthWorkHoursReporter.cs" />
     <Compile Include="Reporters\OvertimeReporter.cs" />
     <Compile Include="Reporters\RawUserDataReporter.cs" />
+    <Compile Include="Reporters\SalaryDataReporter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

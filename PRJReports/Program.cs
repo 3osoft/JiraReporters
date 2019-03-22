@@ -53,7 +53,9 @@ namespace PRJReports
 
          WorklogsReporter currentRangeWorklogsReporter = new WorklogsReporter(userReporter, client, from, till);
 
-         AbsenceReporter absenceReporter = new AbsenceReporter(publicHolidayReporter, userReporter, client);
+         JiraAbsenceReporter jiraAbsenceReporter = new JiraAbsenceReporter(userReporter, client);
+
+         AbsenceReporter absenceReporter = new AbsenceReporter(publicHolidayReporter, jiraAbsenceReporter);
 
          AttendanceReporter attendanceReporter = new AttendanceReporter(userReporter, absenceReporter, currentRangeWorklogsReporter, from, till);
 

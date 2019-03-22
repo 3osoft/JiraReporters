@@ -1,9 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace HRReports.Domain
 {
    public class UserData
    {
+      private static readonly Dictionary<string, ContractType> ContractTypesDictionary = new Dictionary<string, ContractType>
+      {
+         {"tpp", Domain.ContractType.Employee},
+         {"dohoda", Domain.ContractType.PartTimeEmployee},
+         {"szco", Domain.ContractType.SelfEmployedContractor},
+         {"sro", Domain.ContractType.CompanyContractor}
+      };
+
       public string Login { get; set; }
       public string Initials { get; set; }
       public string FirstName { get; set; }
@@ -25,5 +34,17 @@ namespace HRReports.Domain
       public DateTime? DateOfBirth { get; set; }
       public string Benefit { get; set; }
       public string Note { get; set; }
+
+      public ContractType GetContractType()
+      {
+         ContractType result = Domain.ContractType.Unknown;
+         var trimmedContractType = ContractType.Trim().ToLowerInvariant();
+         if (ContractTypesDictionary.ContainsKey(trimmedContractType))
+         {
+            result = ContractTypesDictionary[trimmedContractType];
+         }
+
+         return result;
+      }
    }
 }
