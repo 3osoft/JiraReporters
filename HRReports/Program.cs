@@ -86,6 +86,11 @@ namespace HRReports
          JiraApiClient client = new JiraApiClient(config.JiraSettings);
 
          var workHoursReporter = new MonthWorkHoursReporter(holidayReporter, month, year);
+
+         var oneMonthFurther = start.Date.AddMonths(1);
+
+         var foodStampsWorkHoursReporter = new MonthWorkHoursReporter(holidayReporter, oneMonthFurther.Month, oneMonthFurther.Year);
+
          var jiraAbsenceReporter = new JiraAbsenceReporter(freshestUserDataReporter, client);
          var absenceReporter = new AbsenceReporter(holidayReporter, jiraAbsenceReporter);
          var worklogsReporter = new WorklogsReporter(freshestUserDataReporter, client, start, end);
@@ -93,7 +98,7 @@ namespace HRReports
 
          var overtimeReporter = new OvertimeReporter(attendanceReporter, usersActiveInMonthReporter, workHoursReporter, year, month);
          var salaryDataReporter = new SalaryDataReporter(usersActiveInMonthReporter, attendanceReporter, jiraAbsenceReporter, year, month);
-         var foodStampReporter = new FoodStampReporter(workHoursReporter, absenceReporter, usersActiveInMonthReporter, year, month);
+         var foodStampReporter = new FoodStampReporter(foodStampsWorkHoursReporter, absenceReporter, usersActiveInMonthReporter, year, month);
 
          var overtimeWriter = new ReportWriter<List<Overtime>>(overtimeReporter, new OvertimeSheet(config.OvertimeSheetSettings, monthlySheetsPrefix));
          var salaryDataWriter = new ReportWriter<List<SalaryData>>(salaryDataReporter, new SalaryDataSheet(config.SalaryDataSheetSettings, monthlySheetsPrefix));
