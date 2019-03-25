@@ -1,25 +1,25 @@
-﻿using JiraReporterCore.Domain;
+﻿using JiraReporterCore.Domain.Users;
 
 namespace PRJReports.Database.Mappers
 {
    public class UserMapper
    {
-      public static User ToDomain(UserModel model)
+      public static UserData ToDomain(UserModel model)
       {
-         return new User
+         return new UserData
          {
-            UserName = model.UserName,
+            Login = model.UserName,
             IsTracking = model.IsTracking,
             Initials = model.Initials
          };
       }
 
-      public static UserModel ToModel(User domain)
+      public static UserModel ToModel(UserData domain)
       {
          return new UserModel
          {
-            UserName = domain.UserName,
-            IsTracking = domain.IsTracking,
+            UserName = domain.Login,
+            IsTracking = domain.IsTracking.HasValue && domain.IsTracking.Value,
             Initials = domain.Initials
          };
       }

@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using HRReports.Domain;
+using JiraReporterCore.Domain.Users;
 using JiraReporterCore.JiraApi.Models;
 using JiraReporterCore.Reporters;
+using JiraReporterCore.Reporters.Users;
 using JiraReporterCore.Utils;
 
 namespace HRReports.Reporters
@@ -16,15 +18,15 @@ namespace HRReports.Reporters
 
       private const string IllnessAbsenceCategoryString = "Illness";
 
-      private readonly CurrentUsersReporter _currentUsersReporter;
+      private readonly UsersActiveInMonthReporter _usersActiveInMonthReporter;
       private readonly AttendanceReporter _attendanceReporter;
       private readonly JiraAbsenceReporter _jiraAbsenceReporter;
       private readonly int _year;
       private readonly int _month;
 
-      public SalaryDataReporter(CurrentUsersReporter currentUsersReporter, AttendanceReporter attendanceReporter, JiraAbsenceReporter jiraAbsenceReporter, int year, int month)
+      public SalaryDataReporter(UsersActiveInMonthReporter usersActiveInMonthReporter, AttendanceReporter attendanceReporter, JiraAbsenceReporter jiraAbsenceReporter, int year, int month)
       {
-         _currentUsersReporter = currentUsersReporter;
+         _usersActiveInMonthReporter = usersActiveInMonthReporter;
          _attendanceReporter = attendanceReporter;
          _year = year;
          _month = month;
@@ -36,10 +38,10 @@ namespace HRReports.Reporters
          Logger.Info("Calculating salary data");
          var jiraAbsences = _jiraAbsenceReporter.Report();
 
-         var users = _currentUsersReporter.Report();
-         var salariedUsers = users.Where(x => SalariedContractTypes.Contains(x.GetContractType()));
+         var users = _usersActiveInMonthReporter.Report();
+         var salariedUsers = users.Where(x => SalariedContractTypes.Contains(x.GetContractType())).ToList();
 
-         Logger.Info("Found {0} salaried users", salariedUsers.Count());
+         Logger.Info("Found {0} salaried users", salariedUsers.Count);
 
          var relevantAttendance = _attendanceReporter.Report()
             .Where(x => x.Date.Year == _year && x.Date.Month == _month)

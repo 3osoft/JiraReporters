@@ -10,15 +10,15 @@ namespace HRReports.Reporters
       private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
       private readonly AttendanceReporter _attendanceReporter;
-      private readonly CurrentUsersReporter _currentUserReporter;
+      private readonly UsersActiveInMonthReporter _usersActiveInMonthReporter;
       private readonly MonthWorkHoursReporter _workHoursReporter;
       private readonly int _year;
       private readonly int _month;
 
-      public OvertimeReporter(AttendanceReporter attendanceReporter, CurrentUsersReporter currentUserReporter, MonthWorkHoursReporter workHoursReporter, int year, int month)
+      public OvertimeReporter(AttendanceReporter attendanceReporter, UsersActiveInMonthReporter usersActiveInMonthReporter, MonthWorkHoursReporter workHoursReporter, int year, int month)
       {
          _attendanceReporter = attendanceReporter;
-         _currentUserReporter = currentUserReporter;
+         _usersActiveInMonthReporter = usersActiveInMonthReporter;
          _workHoursReporter = workHoursReporter;
          _year = year;
          _month = month;
@@ -26,7 +26,7 @@ namespace HRReports.Reporters
 
       protected override List<Overtime> CalculateReportData()
       {
-         var users = _currentUserReporter.Report();
+         var users = _usersActiveInMonthReporter.Report();
          var attendances = _attendanceReporter.Report();
 
          var timeTrackingUsers = users.Where(x => x.IsTracking.HasValue && x.IsTracking.Value);
@@ -43,7 +43,7 @@ namespace HRReports.Reporters
                HoursWorked = gu.Sum(x => x.HoursWorked),
                ContractType = u.ContractType,
                FirstName = u.FirstName,
-               LastName = u.FirstName,
+               LastName = u.LastName,
                CostCenter = u.CostCenter,
                Month = _month,
                Year = _year,

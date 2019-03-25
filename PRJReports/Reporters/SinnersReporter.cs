@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JiraReporterCore.Domain.Users;
 using JiraReporterCore.Reporters;
 using PRJReports.Sin;
 
@@ -10,12 +11,12 @@ namespace PRJReports.Reporters
    {
       private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-      private readonly UserReporter _userReporter;
+      private readonly BaseReporter<List<UserData>> _userReporter;
       private readonly WorklogsReporter _worklogsReporter;
       private readonly AttendanceReporter _attendanceReporter;
       private readonly DateTime _dateOfSin;
 
-      public SinnersReporter(UserReporter userReporter, WorklogsReporter worklogsReporter, AttendanceReporter attendanceReporter, DateTime dateOfSin)
+      public SinnersReporter(BaseReporter<List<UserData>> userReporter, WorklogsReporter worklogsReporter, AttendanceReporter attendanceReporter, DateTime dateOfSin)
       {
          _userReporter = userReporter;
          _worklogsReporter = worklogsReporter;
@@ -52,8 +53,8 @@ namespace PRJReports.Reporters
 
          var longWorklogSinners = workLogs
             .Where(x => x.Date.Equals(_dateOfSin) && x.Hours >= LongWorklogSinner.LongWorklogThreshold)
-            .Join(users, w => w.User, u => u.UserName, (w, u) => new { w.Hours, w.User, u.IsTracking })
-            .Where(x => x.IsTracking)
+            .Join(users, w => w.User, u => u.Login, (w, u) => new { w.Hours, w.User, u.IsTracking })
+            .Where(x => x.IsTracking.HasValue && x.IsTracking.Value)
             .Select(x => new LongWorklogSinner
             {
                SinnerLogin = x.User,
@@ -64,9 +65,9 @@ namespace PRJReports.Reporters
          var timeTrackedSinners = attendance
             .Where(x => x.Date.Equals(_dateOfSin) && (x.TotalHours < TimeTrackedSinner.LowHoursThreshold ||
                                                      x.TotalHours > TimeTrackedSinner.HighHoursThreshold))
-            .Join(users, a => a.User, u => u.UserName,
+            .Join(users, a => a.User, u => u.Login,
                (a, u) => new { a.User, a.AbsenceTotal, a.TotalHours, a.HoursWorked, u.IsTracking })
-            .Where(x => x.IsTracking)
+            .Where(x => x.IsTracking.HasValue && x.IsTracking.Value)
             .Select(x => new TimeTrackedSinner
             {
                SinnerLogin = x.User,
@@ -78,9 +79,9 @@ namespace PRJReports.Reporters
 
          var noTimeTrackedSinners = attendance
             .Where(x => x.Date.Equals(_dateOfSin) && x.TotalHours == 0)
-            .Join(users, a => a.User, u => u.UserName,
+            .Join(users, a => a.User, u => u.Login,
                (a, u) => new { a.User,u.IsTracking })
-            .Where(x => x.IsTracking)
+            .Where(x => x.IsTracking.HasValue && x.IsTracking.Value)
             .Select(x => new NoTimeTrackedSinner
             {
                SinnerLogin = x.User,

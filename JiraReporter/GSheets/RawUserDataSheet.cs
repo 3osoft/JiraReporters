@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HRReports.Domain;
 using JiraReporterCore.Configuration;
-using JiraReporterCore.GSheets;
+using JiraReporterCore.Domain.Users;
 
-namespace HRReports.GSheets
+namespace JiraReporterCore.GSheets
 {
    public class RawUserDataSheet : GoogleSheet
    {
@@ -42,8 +41,11 @@ namespace HRReports.GSheets
                PhoneNumber = (string) x[17],
                ICEPhoneNumber = (string) x[18],
                DateOfBirth = TryParseDate(x[19]),
-               Benefit = (string) x[20],
-               Note = (string) x[21]
+               WorkAnniversaryDate = TryParseDate(x[20]),
+               Benefit = (string) x[21],
+               ContractOrAmendmentSignedOn = TryParseDate(x[22]),
+               ContractOrAmendmentValidFrom = TryParseDate(x[23]),
+               Note = (string) x[24]
             }
          }).ToList();
 

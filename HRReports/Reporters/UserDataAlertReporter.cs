@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HRReports.Alerts;
 using JiraReporterCore.Reporters;
+using JiraReporterCore.Reporters.Users;
 
 namespace HRReports.Reporters
 {

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using HRReports.Domain;
+using JiraReporterCore.Domain;
+using JiraReporterCore.Domain.Users;
 
 namespace HRReports.Alerts
 {

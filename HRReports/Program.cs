@@ -8,9 +8,12 @@ using HRReports.Domain;
 using HRReports.Gmail;
 using HRReports.GSheets;
 using HRReports.Reporters;
+using JiraReporterCore.Domain.Users;
+using JiraReporterCore.GSheets;
 using JiraReporterCore.JiraApi;
 using JiraReporterCore.JiraApi.Models;
 using JiraReporterCore.Reporters;
+using JiraReporterCore.Reporters.Users;
 using JiraReporterCore.Reporters.Writer;
 using Newtonsoft.Json;
 
@@ -40,14 +43,16 @@ namespace HRReports
          //TODO first hide all tabs in the HR sheet report
          
          var rawUserDataReporter = new RawUserDataReporter(new RawUserDataSheet(config.RawUsersSheetSettings));
-         var currentUsersReporter = new CurrentUsersReporter(rawUserDataReporter);
+         var freshestUserDataReporter = new FreshestUserDataReporter(rawUserDataReporter);
+
+         var currentUsersReporter = new CurrentUsersReporter(freshestUserDataReporter);
 
          ReportWriter<List<UserData>> userDataWriter = new ReportWriter<List<UserData>>(currentUsersReporter, new CurrentUsersSheet(config.CurrentUsersSheetSettings));
          userDataWriter.Write();
          var publicHolidayReporter = new PublicHolidayReporter(config.PublicHolidayApiKey, Enumerable.Range(HolidayYearStart, currentDate.Year - HolidayYearStart + 2).ToList());
 
-         CalculateMonthlyReports(currentUsersReporter, publicHolidayReporter, previousMonthStart, previousMonthEnd, config);
-         CalculateMonthlyReports(currentUsersReporter, publicHolidayReporter, currentMonthStart, currentDate, config);
+         CalculateMonthlyReports(freshestUserDataReporter, publicHolidayReporter, previousMonthStart, previousMonthEnd, config);
+         CalculateMonthlyReports(freshestUserDataReporter, publicHolidayReporter, currentMonthStart, currentDate, config);
          
 
          SendAlerts(currentUsersReporter, publicHolidayReporter, currentDate, config);
@@ -58,8 +63,7 @@ namespace HRReports
       {
          var userDataAlertReporter = new UserDataAlertReporter(currentUsersReporter, currentDate);
          JiraApiClient client = new JiraApiClient(config.JiraSettings);
-         var userReporter = new UserReporter(config.CurrentUsersSheetSettings);
-         var jiraAbsenceReporter = new JiraAbsenceReporter(userReporter, client);
+         var jiraAbsenceReporter = new JiraAbsenceReporter(currentUsersReporter, client);
          var absenceErrorReporter = new AbsenceErrorsReporter(jiraAbsenceReporter, publicHolidayReporter);
 
          var userDataAlertWriter = new ReportWriter<List<BaseAlert>>(userDataAlertReporter, new HrAlertGmail(config.HrAlertGmailSettings, currentDate));
@@ -69,27 +73,27 @@ namespace HRReports
          absenceErrorWriter.Write();
       }
 
-      private static void CalculateMonthlyReports(CurrentUsersReporter currentUsersReporter,
+      private static void CalculateMonthlyReports(FreshestUserDataReporter freshestUserDataReporter,
          PublicHolidayReporter holidayReporter, DateTime start, DateTime end, Config config)
       {
          var month = start.Month;
          var year = start.Year;
 
+         var usersActiveInMonthReporter = new UsersActiveInMonthReporter(freshestUserDataReporter, start, end);
+
          var monthlySheetsPrefix = $"{year:D4}{month:D2}";
 
          JiraApiClient client = new JiraApiClient(config.JiraSettings);
 
-         
-         var userReporter = new UserReporter(config.CurrentUsersSheetSettings);
          var workHoursReporter = new MonthWorkHoursReporter(holidayReporter, month, year);
-         var jiraAbsenceReporter = new JiraAbsenceReporter(userReporter, client);
+         var jiraAbsenceReporter = new JiraAbsenceReporter(freshestUserDataReporter, client);
          var absenceReporter = new AbsenceReporter(holidayReporter, jiraAbsenceReporter);
-         var worklogsReporter = new WorklogsReporter(userReporter, client, start, end);
-         var attendanceReporter = new AttendanceReporter(userReporter, absenceReporter, worklogsReporter, start, end);
+         var worklogsReporter = new WorklogsReporter(freshestUserDataReporter, client, start, end);
+         var attendanceReporter = new AttendanceReporter(freshestUserDataReporter, absenceReporter, worklogsReporter, start, end);
 
-         var overtimeReporter = new OvertimeReporter(attendanceReporter, currentUsersReporter, workHoursReporter, year, month);
-         var salaryDataReporter = new SalaryDataReporter(currentUsersReporter, attendanceReporter, jiraAbsenceReporter, year, month);
-         var foodStampReporter = new FoodStampReporter(workHoursReporter, absenceReporter, currentUsersReporter, year, month);
+         var overtimeReporter = new OvertimeReporter(attendanceReporter, usersActiveInMonthReporter, workHoursReporter, year, month);
+         var salaryDataReporter = new SalaryDataReporter(usersActiveInMonthReporter, attendanceReporter, jiraAbsenceReporter, year, month);
+         var foodStampReporter = new FoodStampReporter(workHoursReporter, absenceReporter, usersActiveInMonthReporter, year, month);
 
          var overtimeWriter = new ReportWriter<List<Overtime>>(overtimeReporter, new OvertimeSheet(config.OvertimeSheetSettings, monthlySheetsPrefix));
          var salaryDataWriter = new ReportWriter<List<SalaryData>>(salaryDataReporter, new SalaryDataSheet(config.SalaryDataSheetSettings, monthlySheetsPrefix));

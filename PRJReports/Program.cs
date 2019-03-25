@@ -7,6 +7,7 @@ using JiraReporterCore.Domain;
 using JiraReporterCore.GSheets;
 using JiraReporterCore.JiraApi;
 using JiraReporterCore.Reporters;
+using JiraReporterCore.Reporters.Users;
 using JiraReporterCore.Reporters.Writer;
 using JiraReporterCore.Utils;
 using Newtonsoft.Json;
@@ -46,18 +47,19 @@ namespace PRJReports
          Logger.Info("Running for date range from {0} to {1}", from, till);
 
          JiraApiClient client = new JiraApiClient(config.JiraSettings);
-         UserReporter userReporter = new UserReporter(config.UsersSheetSettings);
+         var rawUserDataReporter = new RawUserDataReporter(new RawUserDataSheet(config.UsersSheetSettings));
+         var freshestUserDataReporter = new FreshestUserDataReporter(rawUserDataReporter);
 
-         WorklogsReporter fullHistoryWorklogsReporter = new WorklogsReporter(userReporter, client, new DateTime(2017, 1, 1),DateTime.Now);
+         WorklogsReporter fullHistoryWorklogsReporter = new WorklogsReporter(freshestUserDataReporter, client, new DateTime(2017, 1, 1),DateTime.Now);
          ProjectTimeSpentReporter projectTimeSpentReporter = new ProjectTimeSpentReporter(fullHistoryWorklogsReporter);
 
-         WorklogsReporter currentRangeWorklogsReporter = new WorklogsReporter(userReporter, client, from, till);
+         WorklogsReporter currentRangeWorklogsReporter = new WorklogsReporter(freshestUserDataReporter, client, from, till);
 
-         JiraAbsenceReporter jiraAbsenceReporter = new JiraAbsenceReporter(userReporter, client);
+         JiraAbsenceReporter jiraAbsenceReporter = new JiraAbsenceReporter(freshestUserDataReporter, client);
 
          AbsenceReporter absenceReporter = new AbsenceReporter(publicHolidayReporter, jiraAbsenceReporter);
 
-         AttendanceReporter attendanceReporter = new AttendanceReporter(userReporter, absenceReporter, currentRangeWorklogsReporter, from, till);
+         AttendanceReporter attendanceReporter = new AttendanceReporter(freshestUserDataReporter, absenceReporter, currentRangeWorklogsReporter, from, till);
 
          var attendanceReportWriter = new ReportWriter<List<Attendance>>(attendanceReporter, new AttendanceGridSheet(config.AttendanceGridSheetSettings));
          attendanceReportWriter.Write();
@@ -68,7 +70,9 @@ namespace PRJReports
          if (shouldReportSinnersToday)
          {
             var dateOfSin = DateTimeUtils.GetLastWorkDay(publicHolidayReporter.Report(), DateTime.Now.Date.AddDays(-1));
-            SinnersReporter sinnersReporter = new SinnersReporter(userReporter, currentRangeWorklogsReporter, attendanceReporter, dateOfSin);
+            var currentUsersReporter = new CurrentUsersReporter(freshestUserDataReporter);
+            
+            SinnersReporter sinnersReporter = new SinnersReporter(currentUsersReporter, currentRangeWorklogsReporter, attendanceReporter, dateOfSin);
 
             var gSheetSinnerReportWriter = new ReportWriter<List<IEnumerable<Sinner>>>(sinnersReporter, new SinnerSheet(config.SinnersSheetSettings));
             gSheetSinnerReportWriter.Write();
@@ -91,7 +95,7 @@ namespace PRJReports
                ctx.Absences.AddRange(absenceReporter.Report().Select(AbsenceMapper.ToModel));
                ctx.Worklogs.AddRange(currentRangeWorklogsReporter.Report().Select(WorklogMapper.ToModel));
                ctx.Attendance.AddRange(attendanceReporter.Report().Select(AttendanceMapper.ToModel));
-               ctx.Users.AddRange(userReporter.Report().Select(UserMapper.ToModel));
+               ctx.Users.AddRange(freshestUserDataReporter.Report().Select(UserMapper.ToModel));
                ctx.SaveChanges();
                transaction.Commit();
             }

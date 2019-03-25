@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using HRReports.Domain;
-using HRReports.GSheets;
-using JiraReporterCore.Reporters;
+using JiraReporterCore.Domain.Users;
+using JiraReporterCore.GSheets;
 
-namespace HRReports.Reporters
+namespace JiraReporterCore.Reporters.Users
 {
    public class RawUserDataReporter : BaseReporter<List<RawUserData>>
    {

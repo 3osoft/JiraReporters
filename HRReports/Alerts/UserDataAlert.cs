@@ -1,5 +1,7 @@
 ﻿using System;
 using HRReports.Domain;
+using JiraReporterCore.Domain;
+using JiraReporterCore.Domain.Users;
 
 namespace HRReports.Alerts
 {

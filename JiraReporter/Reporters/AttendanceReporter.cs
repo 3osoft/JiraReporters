@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JiraReporterCore.Domain;
+using JiraReporterCore.Domain.Users;
 using JiraReporterCore.JiraApi.Models;
 using JiraReporterCore.Utils;
 
@@ -11,13 +12,13 @@ namespace JiraReporterCore.Reporters
    {
       private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-      private readonly UserReporter _userReporter;
+      private readonly BaseReporter<List<UserData>> _userReporter;
       private readonly AbsenceReporter _absenceReporter;
       private readonly WorklogsReporter _worklogsReporter;
       private readonly DateTime _from;
       private readonly DateTime _till;
 
-      public AttendanceReporter(UserReporter userReporter, AbsenceReporter absenceReporter, WorklogsReporter worklogsReporter, DateTime from, DateTime till)
+      public AttendanceReporter(BaseReporter<List<UserData>> userReporter, AbsenceReporter absenceReporter, WorklogsReporter worklogsReporter, DateTime from, DateTime till)
       {
          _userReporter = userReporter;
          _absenceReporter = absenceReporter;
@@ -29,8 +30,8 @@ namespace JiraReporterCore.Reporters
       protected override List<Attendance> CalculateReportData()
       {
          Logger.Info("Calculating attendance");
-
-         var attendance = GetAttendances(_userReporter.GetUserNames(), _absenceReporter.Report(), _worklogsReporter.Report(), _from, _till);
+         var userNames = _userReporter.Report().Select(x => x.Login).ToList();
+         var attendance = GetAttendances(userNames, _absenceReporter.Report(), _worklogsReporter.Report(), _from, _till);
          Logger.Info("Writing to time grid sheet");
 
          return attendance;

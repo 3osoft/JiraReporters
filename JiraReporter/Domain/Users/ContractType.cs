@@ -1,4 +1,4 @@
-﻿namespace HRReports.Domain
+﻿namespace JiraReporterCore.Domain.Users
 {
    public enum ContractType
    {

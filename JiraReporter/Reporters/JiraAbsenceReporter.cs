@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using JiraReporterCore.Domain.Users;
 using JiraReporterCore.JiraApi;
 using JiraReporterCore.JiraApi.Models;
 
@@ -15,10 +16,10 @@ namespace JiraReporterCore.Reporters
          "Rejected"
       };
 
-      private readonly UserReporter _userReporter;
+      private readonly BaseReporter<List<UserData>> _userReporter;
       private readonly JiraApiClient _jiraApiClient;
 
-      public JiraAbsenceReporter(UserReporter userReporter, JiraApiClient jiraApiClient)
+      public JiraAbsenceReporter(BaseReporter<List<UserData>> userReporter, JiraApiClient jiraApiClient)
       {
          _userReporter = userReporter;
          _jiraApiClient = jiraApiClient;
@@ -27,7 +28,7 @@ namespace JiraReporterCore.Reporters
       protected override List<JiraAbsence> CalculateReportData()
       {
          Logger.Info("Getting jira absences");
-         var initialsDictionary = _userReporter.Report().ToDictionary(x => x.Initials, x => x.UserName);
+         var initialsDictionary = _userReporter.Report().ToDictionary(x => x.Initials, x => x.Login);
          var allStatusAbsences = _jiraApiClient.GetAbsences(initialsDictionary).ToList();
          var absences = allStatusAbsences.Where(x => !AbsenceStatusesToBeIgnored.Contains(x.Status)).ToList();
          Logger.Info("Found {0} absences in all status, {1} in usable status", allStatusAbsences.Count, absences.Count);

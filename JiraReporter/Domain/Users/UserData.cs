@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HRReports.Domain
+namespace JiraReporterCore.Domain.Users
 {
    public class UserData
    {
       private static readonly Dictionary<string, ContractType> ContractTypesDictionary = new Dictionary<string, ContractType>
       {
-         {"tpp", Domain.ContractType.Employee},
-         {"dohoda", Domain.ContractType.PartTimeEmployee},
-         {"szco", Domain.ContractType.SelfEmployedContractor},
-         {"sro", Domain.ContractType.CompanyContractor}
+         {"tpp", Users.ContractType.Employee},
+         {"dohoda", Users.ContractType.PartTimeEmployee},
+         {"szco", Users.ContractType.SelfEmployedContractor},
+         {"sro", Users.ContractType.CompanyContractor}
       };
 
       public string Login { get; set; }
@@ -32,12 +32,15 @@ namespace HRReports.Domain
       public string PhoneNumber { get; set; }
       public string ICEPhoneNumber { get; set; }
       public DateTime? DateOfBirth { get; set; }
+      public DateTime? WorkAnniversaryDate { get; set; }
+      public DateTime? ContractOrAmendmentSignedOn { get; set; }
+      public DateTime? ContractOrAmendmentValidFrom { get; set; }
       public string Benefit { get; set; }
       public string Note { get; set; }
 
       public ContractType GetContractType()
       {
-         ContractType result = Domain.ContractType.Unknown;
+         ContractType result = Users.ContractType.Unknown;
          var trimmedContractType = ContractType.Trim().ToLowerInvariant();
          if (ContractTypesDictionary.ContainsKey(trimmedContractType))
          {

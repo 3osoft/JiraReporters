@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using HRReports.Domain;
+using JiraReporterCore.Domain.Users;
 using JiraReporterCore.Reporters;
 
 namespace HRReports.Reporters
@@ -13,15 +14,15 @@ namespace HRReports.Reporters
 
       private readonly MonthWorkHoursReporter _monthWorkHoursReporter;
       private readonly AbsenceReporter _absenceReporter;
-      private readonly CurrentUsersReporter _currentUsersReporter;
+      private readonly UsersActiveInMonthReporter _usersActiveInMonthReporter;
       private readonly int _year;
       private readonly int _month;
 
-      public FoodStampReporter(MonthWorkHoursReporter monthWorkHoursReporter, AbsenceReporter absenceReporter, CurrentUsersReporter currentUsersReporter, int year, int month)
+      public FoodStampReporter(MonthWorkHoursReporter monthWorkHoursReporter, AbsenceReporter absenceReporter, UsersActiveInMonthReporter usersActiveInMonthReporter, int year, int month)
       {
          _monthWorkHoursReporter = monthWorkHoursReporter;
          _absenceReporter = absenceReporter;
-         _currentUsersReporter = currentUsersReporter;
+         _usersActiveInMonthReporter = usersActiveInMonthReporter;
          _year = year;
          _month = month;
       }
@@ -29,7 +30,7 @@ namespace HRReports.Reporters
       protected override List<FoodStampData> CalculateReportData()
       {
          Logger.Info("Calculating food stamp data");
-         var entitledUsers = _currentUsersReporter.Report().Where(x => x.GetContractType() == ContractType.Employee);
+         var entitledUsers = _usersActiveInMonthReporter.Report().Where(x => x.GetContractType() == ContractType.Employee);
          var monthWorkDays = _monthWorkHoursReporter.Report() / 8;
          var absences = _absenceReporter.Report().Where(x => x.Date.Month == _month && x.Date.Year == _year).ToList();
 

@@ -2,6 +2,8 @@
 using System.Linq;
 using HRReports.Domain;
 using JiraReporterCore.Configuration;
+using JiraReporterCore.Domain;
+using JiraReporterCore.Domain.Users;
 using JiraReporterCore.GSheets;
 
 namespace HRReports.GSheets
@@ -26,7 +28,10 @@ namespace HRReports.GSheets
          "Telefónne číslo",
          "ICE kontakt",
          "Dátum narodenia",
+         "Výročie dátumu nástupu",
          "Benefit",
+         "Zmluva / Dodatok uzavretý v tento deň",
+         "Zmluva / Dodatok uzavretý k tomuto dátumu",
          "Poznámky / Iné"
       };
 
@@ -68,7 +73,10 @@ namespace HRReports.GSheets
             data.PhoneNumber,
             data.ICEPhoneNumber,
             data.DateOfBirth?.ToShortDateString(),
+            data.WorkAnniversaryDate?.ToShortDateString(),
             data.Benefit,
+            data.ContractOrAmendmentSignedOn?.ToShortDateString(),
+            data.ContractOrAmendmentValidFrom?.ToShortDateString(),
             data.Note
          };
       }

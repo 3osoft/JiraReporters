@@ -1,31 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HRReports.Domain;
-using JiraReporterCore.Reporters;
+using JiraReporterCore.Domain.Users;
 
-namespace HRReports.Reporters
+namespace JiraReporterCore.Reporters.Users
 {
    public class CurrentUsersReporter : BaseReporter<List<UserData>>
    {
       private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-      private readonly RawUserDataReporter _rawUserDataReporter;
+      private readonly FreshestUserDataReporter _freshestUserDataReporter;
 
-      public CurrentUsersReporter(RawUserDataReporter rawUserDataReporter)
+      public CurrentUsersReporter(FreshestUserDataReporter freshestUserDataReporter)
       {
-         _rawUserDataReporter = rawUserDataReporter;
+         _freshestUserDataReporter = freshestUserDataReporter;
       }
 
       protected override List<UserData> CalculateReportData()
       {
-         Logger.Info("Getting current users");
-         var groupedUserData = _rawUserDataReporter.Report().GroupBy(u => new
-         {
-            u.UserData.Login
-         });
+         Logger.Info("Getting current active users");
 
-         var freshestUserData = groupedUserData.Select(x => x.OrderByDescending(u => u.RecordDate).FirstOrDefault()?.UserData).ToList();
+         var freshestUserData = _freshestUserDataReporter.Report();
 
          var activeUsers = freshestUserData
             .Where(x => !x.TerminationDate.HasValue || x.TerminationDate.Value.Date > DateTime.Now.Date).ToList();
