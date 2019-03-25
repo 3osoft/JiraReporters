@@ -53,17 +53,17 @@ namespace HRReports
 
          CalculateMonthlyReports(freshestUserDataReporter, publicHolidayReporter, previousMonthStart, previousMonthEnd, config);
          CalculateMonthlyReports(freshestUserDataReporter, publicHolidayReporter, currentMonthStart, currentDate, config);
-         
 
-         SendAlerts(currentUsersReporter, publicHolidayReporter, currentDate, config);
+         SendAlerts(freshestUserDataReporter, publicHolidayReporter, currentDate, config);
       }
 
-      private static void SendAlerts(CurrentUsersReporter currentUsersReporter,
+      private static void SendAlerts(FreshestUserDataReporter freshestUserDataReporter,
          PublicHolidayReporter publicHolidayReporter, DateTime currentDate, Config config)
       {
+         var currentUsersReporter = new CurrentUsersReporter(freshestUserDataReporter);
          var userDataAlertReporter = new UserDataAlertReporter(currentUsersReporter, currentDate);
          JiraApiClient client = new JiraApiClient(config.JiraSettings);
-         var jiraAbsenceReporter = new JiraAbsenceReporter(currentUsersReporter, client);
+         var jiraAbsenceReporter = new JiraAbsenceReporter(freshestUserDataReporter, client);
          var absenceErrorReporter = new AbsenceErrorsReporter(jiraAbsenceReporter, publicHolidayReporter);
 
          var userDataAlertWriter = new ReportWriter<List<BaseAlert>>(userDataAlertReporter, new HrAlertGmail(config.HrAlertGmailSettings, currentDate));

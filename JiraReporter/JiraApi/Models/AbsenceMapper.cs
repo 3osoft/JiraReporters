@@ -22,7 +22,8 @@ namespace JiraReporterCore.JiraApi.Models
             {
                IssueKey = item.key,
                Status = item.fields.status.name,
-               Name = NameVerification(item.fields.summary.ToString().Trim(), item.fields.creator.name.ToString().Trim(), userNameInitialsDictionary),
+               IssueName = item.fields.summary,
+               UserName = NameVerification(item.fields.summary.ToString().Trim(), item.fields.creator.name.ToString().Trim(), userNameInitialsDictionary),
                CreatedDate = item.fields.created,
                StartDate = item.fields[startDateField],
                EndDate = item.fields[endDateField],

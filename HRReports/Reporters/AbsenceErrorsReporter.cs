@@ -50,6 +50,14 @@ namespace HRReports.Reporters
 
          foreach (var absence in absences)
          {
+            if (absence.UserName == "Error")
+            {
+               errors.Add(new AbsenceError
+               {
+                  JiraAbsence = absence,
+                  AbsenceErrorType = AbsenceErrorType.CannotParseUserName
+               });
+            }
             var totalAbsenceDuration = absence.DurationType == AbsenceDayHourEnum.Days
                ? absence.Duration * WorkDayHours
                : absence.Duration;
@@ -82,7 +90,6 @@ namespace HRReports.Reporters
 
             if (hasPartialDayAtStart && hasPartialDayAtEnd)
             {
-
                errors.Add(new AbsenceError
                {
                   JiraAbsence = absence,

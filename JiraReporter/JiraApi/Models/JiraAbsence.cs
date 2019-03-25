@@ -7,7 +7,8 @@ namespace JiraReporterCore.JiraApi.Models
    {
       public int Id { get; set; }
       public string IssueKey { get; set; }
-      public string Name { get; set; }
+      public string IssueName { get; set; }
+      public string UserName { get; set; }
       public string Status { get; set; }
       public DateTime CreatedDate { get; set; }
       public DateTime StartDate { get; set; }

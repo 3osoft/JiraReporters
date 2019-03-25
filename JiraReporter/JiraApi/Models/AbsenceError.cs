@@ -21,13 +21,16 @@
                case AbsenceErrorType.PartialAtBothEnds:
                   result = "Absencia je ciastocna aj na zaciatku aj na konci (zle nastaveny cas)";
                   break;
+               case AbsenceErrorType.CannotParseUserName:
+                  result = "Nazov absencie je chybny a nebolo mozne zistit pouzivatela";
+                  break;
             }
             return result;
          }}
 
       public string GetMailBody()
       {
-         return $"Absencia <b><a href = \"{JiraAbsence.IssueLink}\">{JiraAbsence.IssueKey}</a></b> ({JiraAbsence.Name}) ma chybu: <i>{AbsenceErrorString}</i>";
+         return $"Absencia <b><a href = \"{JiraAbsence.IssueLink}\">{JiraAbsence.IssueKey} {JiraAbsence.IssueName}</a></b> ({JiraAbsence.UserName}) ma chybu: <i>{AbsenceErrorString}</i>";
       }
    }
 
@@ -36,6 +39,7 @@
       OneDayWithDurationOverWorkday,
       PartialAtBothEnds,
       MoreHoursInCalendarThanInDuration,
-      UnusedOrNoRemainingDuration
+      UnusedOrNoRemainingDuration,
+      CannotParseUserName
    }
 }

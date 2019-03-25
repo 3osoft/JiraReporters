@@ -109,7 +109,7 @@ namespace HRReports.Reporters
       private decimal CalculateIllnessDays(string userLogin, List<JiraAbsence> jiraAbsences)
       {
          decimal result = 0;
-         var relevantAbsences = jiraAbsences.Where(x => x.Name == userLogin
+         var relevantAbsences = jiraAbsences.Where(x => x.UserName == userLogin
                                                         && x.AbsenceCategory == IllnessAbsenceCategoryString
                                                         && (x.StartDate.Month == _month && x.StartDate.Year == _year ||
                                                             x.EndDate.Month == _month && x.EndDate.Year == _year));

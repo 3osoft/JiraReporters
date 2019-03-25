@@ -90,7 +90,7 @@ namespace JiraReporterCore.Reporters
                      AbsenceCategory = absence.AbsenceCategory,
                      Date = currentDay,
                      Hours = newModelHours,
-                     UserName = absence.Name
+                     UserName = absence.UserName
                   });
 
                }
