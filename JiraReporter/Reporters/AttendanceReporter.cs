@@ -14,11 +14,11 @@ namespace JiraReporterCore.Reporters
 
       private readonly BaseReporter<List<UserData>> _userReporter;
       private readonly AbsenceReporter _absenceReporter;
-      private readonly WorklogsReporter _worklogsReporter;
+      private readonly BaseReporter<List<Worklog>> _worklogsReporter;
       private readonly DateTime _from;
       private readonly DateTime _till;
 
-      public AttendanceReporter(BaseReporter<List<UserData>> userReporter, AbsenceReporter absenceReporter, WorklogsReporter worklogsReporter, DateTime from, DateTime till)
+      public AttendanceReporter(BaseReporter<List<UserData>> userReporter, AbsenceReporter absenceReporter, BaseReporter<List<Worklog>> worklogsReporter, DateTime from, DateTime till)
       {
          _userReporter = userReporter;
          _absenceReporter = absenceReporter;

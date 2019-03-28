@@ -40,7 +40,7 @@ namespace JiraReporterCore.JiraApi
 
          if (issuesPagingJob.IsPagingNecessary)
          {
-            Parallel.ForEach(issuesPagingJob.GetPageStarts(), pageStart =>
+            Parallel.ForEach(issuesPagingJob.GetPageStarts(), new ParallelOptions { MaxDegreeOfParallelism = 1 }, pageStart =>
             {
                issuesJsons.Add(GetIssuesWithWorklogs(users, from, till, pageStart));
             });
@@ -50,7 +50,7 @@ namespace JiraReporterCore.JiraApi
          ConcurrentBag<WorklogsPagingJob> worklogsPagingJobs = new ConcurrentBag<WorklogsPagingJob>();
          foreach (dynamic issuesJson in issuesJsons)
          {
-            Parallel.ForEach(issuesJson.issues, (Action<dynamic>)(issueJson =>
+            Parallel.ForEach(issuesJson.issues, new ParallelOptions { MaxDegreeOfParallelism = 1 }, (Action<dynamic>)(issueJson =>
             {
                if (issueJson.fields != null && issueJson.fields.worklog != null)
                {
@@ -91,7 +91,7 @@ namespace JiraReporterCore.JiraApi
             }));
          }
 
-         Parallel.ForEach(worklogsPagingJobs, x =>
+         Parallel.ForEach(worklogsPagingJobs, new ParallelOptions {MaxDegreeOfParallelism = 1}, x =>
          {
             dynamic worklogsJson = GetWorklogsForIssue(x.IssueKey, 0);
             worklogsJson.issueKey = x.IssueKey;

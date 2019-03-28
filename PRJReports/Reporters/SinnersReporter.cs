@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JiraReporterCore.Domain;
 using JiraReporterCore.Domain.Users;
 using JiraReporterCore.Reporters;
 using PRJReports.Sin;
@@ -12,11 +13,11 @@ namespace PRJReports.Reporters
       private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
       private readonly BaseReporter<List<UserData>> _userReporter;
-      private readonly WorklogsReporter _worklogsReporter;
+      private readonly BaseReporter<List<Worklog>> _worklogsReporter;
       private readonly AttendanceReporter _attendanceReporter;
       private readonly DateTime _dateOfSin;
 
-      public SinnersReporter(BaseReporter<List<UserData>> userReporter, WorklogsReporter worklogsReporter, AttendanceReporter attendanceReporter, DateTime dateOfSin)
+      public SinnersReporter(BaseReporter<List<UserData>> userReporter, BaseReporter<List<Worklog>> worklogsReporter, AttendanceReporter attendanceReporter, DateTime dateOfSin)
       {
          _userReporter = userReporter;
          _worklogsReporter = worklogsReporter;
