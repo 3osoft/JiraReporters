@@ -21,6 +21,7 @@ namespace HRReports.GSheets
          "Návšteva lekára (hod.)",
          "Doprovod lekár (hod.)",
          "PN (dni)",
+         "Neplatené voľno (dni)",
          "Odmena/bonus",
          "Poznámky"
       };
@@ -54,7 +55,8 @@ namespace HRReports.GSheets
             data.VacationDays,
             data.DoctorHours,
             data.DoctorFamilyHours,
-            data.IllnessDays
+            data.IllnessDays,
+            data.PersonalLeaveDays
          };
       }
    }

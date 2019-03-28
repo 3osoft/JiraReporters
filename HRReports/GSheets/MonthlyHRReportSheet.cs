@@ -23,9 +23,15 @@ namespace HRReports.GSheets
 
          List<IList<object>> data = new List<IList<object>> {GetHeaders()};
          data.AddRange(GetRowDataToWrite(dataToWrite));
-
+         
          Client.WriteToSheet(GetSheetNameWithPrefix(), data);
+         ApplySheetFormatting();
       }
+
+      protected virtual void ApplySheetFormatting()
+      {
+      }
+
       protected string GetSheetNameWithPrefix()
       {
          return $"{_sheetPrefix}_{Settings.SheetName}";

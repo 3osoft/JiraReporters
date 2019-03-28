@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using JiraReporterCore.GSheets;
 using JiraReporterCore.JiraApi;
 using JiraReporterCore.Reporters;
+using JiraReporterCore.Reporters.Users;
 using JiraReporterCore.Reporters.Writer;
 using JiraReporterCore.Utils;
 using Newtonsoft.Json;
@@ -45,9 +47,11 @@ namespace WorklogErrorNotifier
          var endDate = new DateTime(2019, 03, 7);
 
          var client = new JiraApiClient(config.JiraSettings);
-         var userReporter = new UserReporter(config.UsersSheetSettings);
+         var userReporter = new RawUserDataReporter(new RawUserDataSheet(config.UsersSheetSettings));
+         var freshestUserDataReporter = new FreshestUserDataReporter(userReporter);
+
          var publicHolidayReporter = new PublicHolidayReporter(config.PublicHolidayApiKey, new List<int> {2019});
-         var jiraAbsenceReporter = new JiraAbsenceReporter(userReporter, client);
+         var jiraAbsenceReporter = new JiraAbsenceReporter(freshestUserDataReporter, client);
          var absenceReporter = new AbsenceReporter(publicHolidayReporter, jiraAbsenceReporter);
 
          foreach (var date in DateTimeUtils.EachDay(startDate, endDate))
@@ -57,12 +61,12 @@ namespace WorklogErrorNotifier
                Logger.Info($"Notifying {date:d}");
 
                var currentRangeWorklogsReporter =
-                  new WorklogsReporter(userReporter, client, date.Date, date.Date.AddDays(1).AddSeconds(-1));
-               var attendanceReporter = new AttendanceReporter(userReporter, absenceReporter, currentRangeWorklogsReporter,
+                  new WorklogsReporter(freshestUserDataReporter, client, date.Date, date.Date.AddDays(1).AddSeconds(-1));
+               var attendanceReporter = new AttendanceReporter(freshestUserDataReporter, absenceReporter, currentRangeWorklogsReporter,
                   date.Date, date.Date.AddDays(1).AddSeconds(-1));
 
                SinnersReporter sinnersReporter =
-                  new SinnersReporter(userReporter, currentRangeWorklogsReporter, attendanceReporter, date);
+                  new SinnersReporter(freshestUserDataReporter, currentRangeWorklogsReporter, attendanceReporter, date);
 
                var gSheetSinnerReportWriter =
                   new ReportWriter<List<IEnumerable<Sinner>>>(sinnersReporter, new SinnerSheet(config.SinnersSheetSettings));

@@ -22,6 +22,8 @@ namespace HRReports.GSheets
          "Nadčas"
       };
 
+      private const string NumberFormat = "#,##0.00";
+
       public OvertimeSheet(GoogleSheetsSettings settings, string sheetPrefix) : base(settings, sheetPrefix)
       {
       }
@@ -35,7 +37,14 @@ namespace HRReports.GSheets
       {
          return Headers.Cast<object>().ToList();
       }
-      
+
+      protected override void ApplySheetFormatting()
+      {
+         base.ApplySheetFormatting();
+
+         Client.SetNumberFormatting(GetSheetNameWithPrefix(), NumberFormat, 1, null, 9, 11);
+      }
+
       private IList<object> GetRowDataFromUserData(Overtime data)
       {
          return new List<object>

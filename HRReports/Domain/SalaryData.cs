@@ -17,5 +17,6 @@ namespace HRReports.Domain
       public decimal DoctorHours { get; set; }
       public decimal DoctorFamilyHours { get; set; }
       public decimal IllnessDays { get; set; }
+      public decimal PersonalLeaveDays { get; set; }
    }
 }

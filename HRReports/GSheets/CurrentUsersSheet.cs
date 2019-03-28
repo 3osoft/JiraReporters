@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using HRReports.Domain;
 using JiraReporterCore.Configuration;
-using JiraReporterCore.Domain;
 using JiraReporterCore.Domain.Users;
 using JiraReporterCore.GSheets;
 

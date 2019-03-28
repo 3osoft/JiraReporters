@@ -4,7 +4,6 @@ using HRReports.Domain;
 using JiraReporterCore.Domain.Users;
 using JiraReporterCore.JiraApi.Models;
 using JiraReporterCore.Reporters;
-using JiraReporterCore.Reporters.Users;
 using JiraReporterCore.Utils;
 
 namespace HRReports.Reporters
@@ -53,6 +52,7 @@ namespace HRReports.Reporters
                AbsenceVacationTotal = x.Sum(y => y.AbsenceVacation),
                AbsenceDoctorTotal = x.Sum(y => y.AbsenceDoctor),
                AbsenceDoctorFamilyTotal = x.Sum(y => y.AbsenceDoctorFamily),
+               AbsencePersonalLeaveTotal = x.Sum(y => y.AbsencePersonalLeave)
             })
             .Join(salariedUsers, a => a.User, u => u.Login,
                (a, u) => new
@@ -64,12 +64,13 @@ namespace HRReports.Reporters
                   u.FirstName,
                   u.LastName,
                   u.Salary,
-                  u.Rate, //TODO based on the data setup, Rate might not be needed
+                  u.Rate,
                   ContractType = u.GetContractType(),
                   a.HoursWorkedTotal,
                   a.AbsenceVacationTotal,
                   a.AbsenceDoctorTotal,
-                  a.AbsenceDoctorFamilyTotal
+                  a.AbsenceDoctorFamilyTotal,
+                  a.AbsencePersonalLeaveTotal
                });
 
          var result = relevantAttendance.Select(x =>
@@ -81,7 +82,6 @@ namespace HRReports.Reporters
             }
             else if (x.ContractType == ContractType.PartTimeEmployee)
             {
-               //TODO based on the data setup, Rate might not be needed and Salary needs to be used
                salary = x.Rate * x.HoursWorkedTotal;
             }
 
@@ -99,7 +99,8 @@ namespace HRReports.Reporters
                DoctorHours = x.AbsenceDoctorTotal,
                VacationDays = x.AbsenceVacationTotal / 8,
                Salary = salary,
-               IllnessDays = CalculateIllnessDays(x.Login, jiraAbsences)
+               IllnessDays = CalculateIllnessDays(x.Login, jiraAbsences),
+               PersonalLeaveDays = x.AbsencePersonalLeaveTotal / 8
             };
          });
 

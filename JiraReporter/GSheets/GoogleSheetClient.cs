@@ -19,6 +19,7 @@ namespace JiraReporterCore.GSheets
       private const string GOOGLE_API_CREDENTIALS_PATH = "credentials_gmail.json";
       private const string GOOGLE_API_TOKEN_NAME = "token_sheets.json";
       private const string InterpolationTypeNumber = "Number";
+      private const string NumberFormatTypeName = "NUMBER";
       private readonly Color _redColor = new Color { Red = 1 };
       private readonly Color _greenColor = new Color { Green = 1 };
 
@@ -163,12 +164,50 @@ namespace JiraReporterCore.GSheets
             {
                Rule = conditionalFormatRule
             }
-
          };
 
          batchUpdateSpreadsheetRequest.Requests = new List<Request> { updateCellsRequest };
          var bur = Service.Spreadsheets.BatchUpdate(batchUpdateSpreadsheetRequest, SheetId);
          bur.Execute();
+      }
+
+      public void SetNumberFormatting(string sheetName, string formatPattern, int? startRowIndex, int? endRowIndex, int? startColumnIndex, int? endColumnIndex)
+      {
+         Spreadsheet spr = Service.Spreadsheets.Get(SheetId).Execute();
+         Sheet sh = spr.Sheets.FirstOrDefault(s => s.Properties.Title == sheetName);
+         int? sheetId = sh.Properties.SheetId;
+
+         var batchUpdateSpreadsheetRequest = new BatchUpdateSpreadsheetRequest();
+         var updateCellsRequest = new Request
+         {
+            RepeatCell = new RepeatCellRequest
+            {
+               Range = new GridRange
+               {
+                  SheetId = sheetId,
+                  StartRowIndex = startRowIndex,
+                  EndRowIndex = endRowIndex,
+                  StartColumnIndex = startColumnIndex,
+                  EndColumnIndex = endColumnIndex
+               },
+               Cell = new CellData
+               {
+                  UserEnteredFormat = new CellFormat
+                  {
+                     NumberFormat = new NumberFormat
+                     {
+                        Type = NumberFormatTypeName,
+                        Pattern = formatPattern
+                     }
+                  }
+               },
+               Fields = "userEnteredFormat.numberFormat"
+            }
+         };
+
+         batchUpdateSpreadsheetRequest.Requests = new List<Request> { updateCellsRequest };
+         var bur = Service.Spreadsheets.BatchUpdate(batchUpdateSpreadsheetRequest, SheetId);
+         var result = bur.Execute();
       }
 
       public void DeleteAllRowsAndColumns(string sheetName)
