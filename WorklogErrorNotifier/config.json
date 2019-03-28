@@ -1,0 +1,41 @@
+{
+  "JiraSettings": {
+    "BaseUrl": "https://3osoft.atlassian.net/",
+    "Login": "<login>",
+    "Password": "<password>"
+  },
+
+  "SinnerNotifierGmailSettings": {
+    "FromAddress": "adam.blasko@3osoft.com",
+    "FromDisplayName": "Adam Blasko",
+    "ToAddress": "adam.blasko@3osoft.com",
+    "ToDisplayName": "Adam Blasko"
+  },
+
+  "UsersSheetSettings": {
+    "GoogleSheetId": "1amMScro4mHX3lATkUwagYm0kw0kxlBwB9mN28bW0Jq8",
+    "SheetName": "RawData"
+  },
+
+  "AttendanceGridSheetSettings": {
+    "GoogleSheetId": "1DB_Kt0-BXPgOKmCRSqtjYTO-45GYe56jwGkpypKAwUg",
+    "SheetName": "Dochadzka"
+  },
+
+  "ProjectTimeSpentSheetSettings": {
+    "GoogleSheetId": "1DB_Kt0-BXPgOKmCRSqtjYTO-45GYe56jwGkpypKAwUg",
+    "SheetName": "ProjectTimeSpent"
+  },
+
+  "RunLogSheetSettings": {
+    "GoogleSheetId": "1DB_Kt0-BXPgOKmCRSqtjYTO-45GYe56jwGkpypKAwUg",
+    "SheetName": "ToolRunLog"
+  },
+
+  "SinnersSheetSettings": {
+    "GoogleSheetId": "1LxURSw6X2Qgkyn_6l7qE9q0Vhnj5O-N5wjmixV1Wbeo",
+    "SheetName": "Sinners"
+  },
+
+  "PublicHolidayApiKey": "<ApiKey>"
+}

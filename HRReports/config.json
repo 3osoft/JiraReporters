@@ -1,0 +1,48 @@
+{
+  "JiraSettings": {
+    "BaseUrl": "https://3osoft.atlassian.net/",
+    "Login": "<login>",
+    "Password": "<password>"
+  },
+
+  "HrAlertGmailSettings": {
+    "FromAddress": "adam.blasko@3osoft.com",
+    "FromDisplayName": "Adam Blasko",
+    "ToAddress": "adam.blasko@3osoft.com",
+    "ToDisplayName": "Adam Blasko"
+  },
+
+  "AbsenceErrorGmailSettings": {
+    "FromAddress": "adam.blasko@3osoft.com",
+    "FromDisplayName": "Adam Blasko",
+    "ToAddress": "adam.blasko@3osoft.com",
+    "ToDisplayName": "Adam Blasko"
+  },
+
+  "RawUsersSheetSettings": {
+    "GoogleSheetId": "1amMScro4mHX3lATkUwagYm0kw0kxlBwB9mN28bW0Jq8",
+    "SheetName": "RawData"
+  },
+
+  "CurrentUsersSheetSettings": {
+    "GoogleSheetId": "1amMScro4mHX3lATkUwagYm0kw0kxlBwB9mN28bW0Jq8",
+    "SheetName": "Aktualny zoznam ludi"
+  },
+
+  "OvertimeSheetSettings": {
+    "GoogleSheetId": "1amMScro4mHX3lATkUwagYm0kw0kxlBwB9mN28bW0Jq8",
+    "SheetName": "Nadcasy"
+  },
+
+  "SalaryDataSheetSettings": {
+    "GoogleSheetId": "1amMScro4mHX3lATkUwagYm0kw0kxlBwB9mN28bW0Jq8",
+    "SheetName": "Mzdove podklady"
+  },
+
+  "FoodStampSheetSettings": {
+    "GoogleSheetId": "1amMScro4mHX3lATkUwagYm0kw0kxlBwB9mN28bW0Jq8",
+    "SheetName": "Stravne listky"
+  },
+
+  "PublicHolidayApiKey": "<ApiKey>"
+}
