@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using JiraReporterCore.Domain;
 using JiraReporterCore.Reporters;
 
 namespace PRJReports.Reporters
@@ -8,9 +9,9 @@ namespace PRJReports.Reporters
    {
       private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-      private readonly WorklogsReporter _worklogsReporter;
+      private readonly BaseReporter<List<Worklog>> _worklogsReporter;
 
-      public ProjectTimeSpentReporter(WorklogsReporter worklogsReporter)
+      public ProjectTimeSpentReporter(BaseReporter<List<Worklog>> worklogsReporter)
       {
          _worklogsReporter = worklogsReporter;
       }

@@ -39,6 +39,7 @@ namespace PRJReports
          
          DateTime from = config.DateFrom ?? new DateTime(DateTime.Now.Year, 1, 1) ;
          DateTime till = config.DateTo ?? new DateTime(DateTime.Now.Year, 12, 31);
+         DateTime considerWorklogsFrom = DateTime.Now.AddMonths(-config.MonthsToLog).Date;
 
          PublicHolidayReporter publicHolidayReporter = new PublicHolidayReporter(config.PublicHolidayApiKey, Enumerable.Range(2016, till.Year - 2016 + 1).ToList());
 
@@ -50,8 +51,7 @@ namespace PRJReports
          var rawUserDataReporter = new RawUserDataReporter(new RawUserDataSheet(config.UsersSheetSettings));
          var freshestUserDataReporter = new FreshestUserDataReporter(rawUserDataReporter);
 
-         WorklogsReporter fullHistoryWorklogsReporter = new WorklogsReporter(freshestUserDataReporter, client, new DateTime(2017, 1, 1),DateTime.Now);
-         ProjectTimeSpentReporter projectTimeSpentReporter = new ProjectTimeSpentReporter(fullHistoryWorklogsReporter);
+         WorklogsReporter fullInitWorklogsReporter = new WorklogsReporter(freshestUserDataReporter, client, new DateTime(2017, 1, 1), considerWorklogsFrom);
 
          WorklogsReporter currentRangeWorklogsReporter = new WorklogsReporter(freshestUserDataReporter, client, from, till);
 
@@ -63,9 +63,6 @@ namespace PRJReports
 
          var attendanceReportWriter = new ReportWriter<List<Attendance>>(attendanceReporter, new AttendanceGridSheet(config.AttendanceGridSheetSettings));
          attendanceReportWriter.Write();
-
-         var projectTimeSpentWriter = new ReportWriter<Dictionary<string, decimal>>(projectTimeSpentReporter, new ProjectTimeSpentSheet(config.ProjectTimeSpentSheetSettings));
-         projectTimeSpentWriter.Write();
 
          if (shouldReportSinnersToday)
          {
@@ -91,15 +88,21 @@ namespace PRJReports
          {
             using (var transaction = ctx.Database.BeginTransaction())
             {
-               ClearDatabase(ctx);
+               InsertInitialWorklogs(ctx, fullInitWorklogsReporter);
+               ClearDatabase(ctx, considerWorklogsFrom);
+               WorklogsReporter updateReporter = new WorklogsReporter(freshestUserDataReporter, client, GetDateTimeForUpdate(ctx, considerWorklogsFrom), DateTime.Now);
                ctx.Absences.AddRange(absenceReporter.Report().Select(AbsenceMapper.ToModel));
-               ctx.Worklogs.AddRange(currentRangeWorklogsReporter.Report().Select(WorklogMapper.ToModel));
+               ctx.Worklogs.AddRange(updateReporter.Report().Select(WorklogMapper.ToModel));
                ctx.Attendance.AddRange(attendanceReporter.Report().Select(AttendanceMapper.ToModel));
                ctx.Users.AddRange(freshestUserDataReporter.Report().Select(UserMapper.ToModel));
                ctx.SaveChanges();
                transaction.Commit();
             }
          }
+         WorklogsFromDbReporter fullHistoryWorklogsReporter = new WorklogsFromDbReporter(freshestUserDataReporter, new JiraToolDbContext(), new DateTime(2017, 1, 1), DateTime.Now);
+         ProjectTimeSpentReporter projectTimeSpentReporter = new ProjectTimeSpentReporter(fullHistoryWorklogsReporter);
+         var projectTimeSpentWriter = new ReportWriter<Dictionary<string, decimal>>(projectTimeSpentReporter, new ProjectTimeSpentSheet(config.ProjectTimeSpentSheetSettings));
+         projectTimeSpentWriter.Write();
 
          DateTime runEndDateTime = DateTime.Now;
 
@@ -110,12 +113,38 @@ namespace PRJReports
          Logger.Info("Tool run finished");
       }
 
-      private static void ClearDatabase(JiraToolDbContext ctx)
+      private static void ClearDatabase(JiraToolDbContext ctx, DateTime considerWorklogsFrom)
       {
          ctx.Absences.RemoveRange(ctx.Absences);
-         ctx.Worklogs.RemoveRange(ctx.Worklogs);
          ctx.Attendance.RemoveRange(ctx.Attendance);
          ctx.Users.RemoveRange(ctx.Users);
+         ctx.Worklogs.RemoveRange(ctx.Worklogs.Where(log => log.Date >= considerWorklogsFrom));
+      }
+
+      private static void InsertInitialWorklogs(JiraToolDbContext ctx, WorklogsReporter fullInitReporter)
+      {
+         if (IsWorklogInitNecessary(ctx))
+         {
+            ctx.Worklogs.RemoveRange(ctx.Worklogs);
+            ctx.Worklogs.AddRange(fullInitReporter.Report().Select(WorklogMapper.ToModel));
+         }
+      }
+
+      private static bool IsWorklogInitNecessary(JiraToolDbContext ctx)
+      {
+         DateTime startPeriod = new DateTime(2017, 1, 31);
+         return !ctx.Worklogs.Any(log => log.Date < startPeriod);
+      }
+
+      private static DateTime GetDateTimeForUpdate(JiraToolDbContext ctx, DateTime considerWorklogsFrom)
+      {
+         var result = ctx.Worklogs.OrderByDescending(log => log.Date).FirstOrDefault()?.Date.AddDays(1);
+         if (result == null || result > considerWorklogsFrom)
+         {
+            result = considerWorklogsFrom;
+         }
+
+         return result.Value;
       }
    }
 }
