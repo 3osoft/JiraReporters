@@ -5,6 +5,13 @@
     "Password": "<password>"
   },
 
+  "ErrorGmailSettings": {
+    "FromAddress": "adam.blasko@3osoft.com",
+    "FromDisplayName": "Adam Blasko",
+    "ToAddress": "adam.blasko@3osoft.com",
+    "ToDisplayName": "Adam Blasko"
+  },
+
   "SinnerNotifierGmailSettings": {
     "FromAddress": "adam.blasko@3osoft.com",
     "FromDisplayName": "Adam Blasko",

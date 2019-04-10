@@ -7,6 +7,7 @@ namespace PRJReports.Configuration
    public class Config
    {
       public JiraSettings JiraSettings { get; set; }
+      public GmailSettings ErrorGmailSettings { get; set; }
       public GmailSettings SinnerNotifierGmailSettings { get; set; }
       public GoogleSheetsSettings UsersSheetSettings { get; set; }
       public GoogleSheetsSettings AttendanceGridSheetSettings { get; set; }

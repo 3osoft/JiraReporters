@@ -28,12 +28,16 @@ namespace PRJReports
       public const string ConfigFilePath = "config.json";
       static void Main(string[] args)
       {
+         Config config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(ConfigFilePath));
+
          AppDomain.CurrentDomain.UnhandledException += (sender, eventArgs) =>
          {
-            Logger.Fatal(eventArgs.ExceptionObject as Exception);
-         };
+            Exception exception = eventArgs.ExceptionObject as Exception;
+            Logger.Fatal(exception);
 
-         Config config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(ConfigFilePath));
+            ErrorNotificationGmail errorNotificationGmail = new ErrorNotificationGmail(config.ErrorGmailSettings);
+            errorNotificationGmail.Write(exception);
+         };
 
          DateTime runStartDateTime = DateTime.Now;
          

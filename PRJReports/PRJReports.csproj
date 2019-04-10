@@ -140,6 +140,7 @@
     <Compile Include="Database\Mappers\WorklogMapper.cs" />
     <Compile Include="Database\UserModel.cs" />
     <Compile Include="Database\WorklogModel.cs" />
+    <Compile Include="Gmail\ErrorNotificationGmail.cs" />
     <Compile Include="Gmail\SinnerGmail.cs" />
     <Compile Include="GSheets\ProjectTimeSpentSheet.cs" />
     <Compile Include="GSheets\AttendanceGridSheet.cs" />
