@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using HRReports.Domain;
+using JiraReporterCore.Domain.Users;
 using JiraReporterCore.Reporters;
 
 namespace HRReports.Reporters
@@ -48,12 +50,32 @@ namespace HRReports.Reporters
                Month = _month,
                Year = _year,
                Absences = gu.Sum(x => x.AbsenceTotal),
-               WorkHoursInMonth = workHours
+               WorkHoursInMonth = CalculateWorkHoursInMonth(u, workHours)
             })
             .ToList();
 
 
          return overtimes;
+      }
+
+      private int CalculateWorkHoursInMonth(UserData user, int fullWorkHours)
+      {
+         int result = fullWorkHours;
+
+         if (user.TerminationDate.HasValue)
+         {
+            DateTime terminationDate = user.TerminationDate.Value;
+            if (terminationDate.Year == _year && terminationDate.Month == _month)
+            {
+               MonthWorkHoursReporter userMonthWorkHoursReporter = new MonthWorkHoursReporter(
+                  _workHoursReporter,
+                  new DateTime(_year, _month, 1),
+                  terminationDate);
+               result = userMonthWorkHoursReporter.Report();
+            }
+         }
+
+         return result;
       }
    }
 }

@@ -10,6 +10,11 @@ namespace JiraReporterCore.Domain
       public decimal Hours { get; set; }
       public string AbsenceCategory { get; set; }
 
+      public override string ToString()
+      {
+         return $"{UserName}, {Date}, Hours: {Hours}, Category: {AbsenceCategory}";
+      }
+
       public AbsenceCategory GetAbsenceCategory()
       {
          AbsenceCategory result;

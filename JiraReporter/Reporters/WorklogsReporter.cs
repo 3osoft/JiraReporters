@@ -30,7 +30,9 @@ namespace JiraReporterCore.Reporters
          Logger.Info("Getting worklogs in range {0} to {1}", _from, _till);
 
          var result = new List<Worklog>();
-         var userNames = _userReporter.Report().Select(x => x.Login).ToList();
+         var userNames = _userReporter.Report()
+            .Select(x => x.Login)
+            .ToList();
 
          Worklogs worklogs = _jiraApiClient.GetWorklogs(userNames, _from, _till);
 

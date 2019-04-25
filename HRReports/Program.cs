@@ -35,11 +35,9 @@ namespace HRReports
 
          Config config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(ConfigFilePath));
 
-         var currentDate = DateTime.Now;
-         var currentMonthStart = new DateTime(currentDate.Year, currentDate.Month, 1);
-         var previousMonthStart = currentMonthStart.AddMonths(-1);
-         var previousMonthEnd = currentMonthStart.AddSeconds(-1);
-
+         var date = DateTime.Now;
+         var month = new DateTime(date.Year, date.Month, 1);
+         
          //TODO first hide all tabs in the HR sheet report
          
          var rawUserDataReporter = new RawUserDataReporter(new RawUserDataSheet(config.RawUsersSheetSettings));
@@ -49,12 +47,11 @@ namespace HRReports
 
          ReportWriter<List<UserData>> userDataWriter = new ReportWriter<List<UserData>>(currentUsersReporter, new CurrentUsersSheet(config.CurrentUsersSheetSettings));
          userDataWriter.Write();
-         var publicHolidayReporter = new PublicHolidayReporter(config.PublicHolidayApiKey, Enumerable.Range(HolidayYearStart, currentDate.Year - HolidayYearStart + 2).ToList());
+         var publicHolidayReporter = new PublicHolidayReporter(config.PublicHolidayApiKey, Enumerable.Range(HolidayYearStart, month.Year - HolidayYearStart + 2).ToList());
 
-         CalculateMonthlyReports(freshestUserDataReporter, publicHolidayReporter, previousMonthStart, previousMonthEnd, config);
-         CalculateMonthlyReports(freshestUserDataReporter, publicHolidayReporter, currentMonthStart, currentDate, config);
+         CalculateMonthlyReports(freshestUserDataReporter, publicHolidayReporter, month, config);
 
-         SendAlerts(freshestUserDataReporter, publicHolidayReporter, currentDate, config);
+         SendAlerts(freshestUserDataReporter, publicHolidayReporter, date, config);
       }
 
       private static void SendAlerts(FreshestUserDataReporter freshestUserDataReporter,
@@ -74,38 +71,85 @@ namespace HRReports
       }
 
       private static void CalculateMonthlyReports(FreshestUserDataReporter freshestUserDataReporter,
-         PublicHolidayReporter holidayReporter, DateTime start, DateTime end, Config config)
+         PublicHolidayReporter holidayReporter, DateTime date, Config config)
       {
-         var month = start.Month;
-         var year = start.Year;
-
-         var usersActiveInMonthReporter = new UsersActiveInMonthReporter(freshestUserDataReporter, start, end);
-
-         var monthlySheetsPrefix = $"{year:D4}{month:D2}";
-
          JiraApiClient client = new JiraApiClient(config.JiraSettings);
-
-         var workHoursReporter = new MonthWorkHoursReporter(holidayReporter, month, year);
-
-         var oneMonthFurther = start.Date.AddMonths(1);
-
-         var foodStampsWorkHoursReporter = new MonthWorkHoursReporter(holidayReporter, oneMonthFurther.Month, oneMonthFurther.Year);
-
          var jiraAbsenceReporter = new JiraAbsenceReporter(freshestUserDataReporter, client);
          var absenceReporter = new AbsenceReporter(holidayReporter, jiraAbsenceReporter);
-         var worklogsReporter = new WorklogsReporter(freshestUserDataReporter, client, start, end);
-         var attendanceReporter = new AttendanceReporter(freshestUserDataReporter, absenceReporter, worklogsReporter, start, end);
 
-         var overtimeReporter = new OvertimeReporter(attendanceReporter, usersActiveInMonthReporter, workHoursReporter, year, month);
-         var salaryDataReporter = new SalaryDataReporter(usersActiveInMonthReporter, attendanceReporter, jiraAbsenceReporter, year, month);
-         var foodStampReporter = new FoodStampReporter(foodStampsWorkHoursReporter, absenceReporter, usersActiveInMonthReporter, year, month);
+         var previousDate = date.AddMonths(-1);
+         var previousDateEnd = date.AddSeconds(-1);
+         var previousDateYear = previousDate.Year;
+         var previousDateMonth = previousDate.Month;
 
-         var overtimeWriter = new ReportWriter<List<Overtime>>(overtimeReporter, new OvertimeSheet(config.OvertimeSheetSettings, monthlySheetsPrefix));
-         var salaryDataWriter = new ReportWriter<List<SalaryData>>(salaryDataReporter, new SalaryDataSheet(config.SalaryDataSheetSettings, monthlySheetsPrefix));
-         var foodStampWriter = new ReportWriter<List<FoodStampData>>(foodStampReporter, new FoodStampSheet(config.FoodStampSheetSettings, monthlySheetsPrefix));
+         var previousDateSheetsPrefix = $"{previousDateYear:D4}{previousDateMonth:D2}";
 
+         var previousDateActiveUsersReporter = new UsersActiveInMonthReporter(
+            freshestUserDataReporter, 
+            previousDate, 
+            previousDateEnd);         
+
+         var previousDateWorkHoursReporter = new MonthWorkHoursReporter(
+            holidayReporter, 
+            previousDateMonth, 
+            previousDateYear);
+         
+         var previousDateWorklogsReporter = new WorklogsReporter(
+            freshestUserDataReporter, 
+            client, 
+            previousDate,
+            previousDateEnd);
+
+         var attendanceReporter = new AttendanceReporter(
+            freshestUserDataReporter, 
+            absenceReporter, 
+            previousDateWorklogsReporter, 
+            previousDate, 
+            previousDateEnd);
+
+         var overtimeReporter = new OvertimeReporter(
+            attendanceReporter, 
+            previousDateActiveUsersReporter, 
+            previousDateWorkHoursReporter, 
+            previousDateYear, 
+            previousDateMonth);
+         var overtimeWriter = new ReportWriter<List<Overtime>>(
+            overtimeReporter, 
+            new OvertimeSheet(config.OvertimeSheetSettings, previousDateSheetsPrefix));
          overtimeWriter.Write();
+
+         var salaryDataReporter = new SalaryDataReporter(
+            previousDateActiveUsersReporter, 
+            attendanceReporter, 
+            jiraAbsenceReporter, 
+            previousDateYear, 
+            previousDateMonth);
+         var salaryDataWriter = new ReportWriter<List<SalaryData>>(
+            salaryDataReporter, 
+            new SalaryDataSheet(config.SalaryDataSheetSettings, previousDateSheetsPrefix));
          salaryDataWriter.Write();
+
+         var dateEnd = date.AddMonths(1).AddSeconds(-1);
+         var month = date.Month;
+         var year = date.Year;
+         var foodStampSheetsPrefix = $"{year:D4}{month:D2}";
+
+         var foodStampWorkHoursReporter = new MonthWorkHoursReporter(holidayReporter, month, year);
+         var foodStampActiveUsersReporter = new UsersActiveInMonthReporter(freshestUserDataReporter, date, dateEnd);
+
+         var foodStampReporter = new FoodStampReporter(
+            foodStampWorkHoursReporter, 
+            absenceReporter, 
+            foodStampActiveUsersReporter, 
+            year, 
+            month,
+            previousDateYear,
+            previousDateMonth);
+
+         var foodStampWriter = new ReportWriter<List<FoodStampData>>(
+            foodStampReporter, 
+            new FoodStampSheet(config.FoodStampSheetSettings, foodStampSheetsPrefix));
+
          foodStampWriter.Write();
       }
    }

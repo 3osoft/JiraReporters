@@ -14,5 +14,10 @@ namespace JiraReporterCore.Domain
       public decimal AbsencePersonalLeave { get; set; }
       public decimal AbsenceTotal => AbsenceDoctorFamily + AbsencePersonalLeave + AbsenceVacation + AbsenceDoctor + AbsenceIllness;
       public decimal TotalHours => HoursWorked + AbsenceTotal;
+
+      public override string ToString()
+      {
+         return $"{Date.ToShortDateString()}, {User}, {HoursWorked}+{AbsenceTotal}={TotalHours}";
+      }
    }
 }

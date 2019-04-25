@@ -14,5 +14,10 @@
       public decimal HoursWorked { get; set; }
       public decimal OvertimeHours => (HoursWorked + Absences) - WorkHoursInMonth;
 
+      public override string ToString()
+      {
+         return $"{FirstName} {LastName}, {Year}/{Month}, Work hours: {WorkHoursInMonth}, " +
+                $"Worked: {HoursWorked} h, Absences: {Absences}, Overtime: {OvertimeHours}";
+      }
    }
 }

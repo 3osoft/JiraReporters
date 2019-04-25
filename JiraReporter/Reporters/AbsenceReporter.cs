@@ -27,13 +27,13 @@ namespace JiraReporterCore.Reporters
          var jiraAbsences = _jiraAbsenceReporter.Report();
 
          var holidays = _publicHolidayReporter.Report();
-         var absences = ConverJiraAbsencesToDomainAbsences(jiraAbsences, holidays);
+         var absences = ConvertJiraAbsencesToDomainAbsences(jiraAbsences, holidays);
 
          Logger.Info("Calculated {0} domain absences from {1} jira absences", absences.Count, jiraAbsences.Count);
          return absences;
       }
 
-      private static List<Absence> ConverJiraAbsencesToDomainAbsences(List<JiraAbsence> absences, List<PublicHoliday> holidays)
+      private static List<Absence> ConvertJiraAbsencesToDomainAbsences(List<JiraAbsence> absences, List<PublicHoliday> holidays)
       {
          List<Absence> result = new List<Absence>();
 

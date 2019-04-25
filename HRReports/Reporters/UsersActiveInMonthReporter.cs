@@ -23,8 +23,7 @@ namespace HRReports.Reporters
       protected override List<UserData> CalculateReportData()
       {
          return _freshestUserDataReporter.Report()
-            .Where(x => (!x.TerminationDate.HasValue || x.TerminationDate.Value.Date > _monthStartDate) && 
-                        (!x.StartDate.HasValue || x.StartDate.Value.Date <= _monthEndDate))
+            .Where(x => x.IsEmployed(_monthStartDate, _monthEndDate))
             .ToList();
       }
    }

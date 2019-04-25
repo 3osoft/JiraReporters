@@ -38,6 +38,12 @@ namespace JiraReporterCore.Domain.Users
       public string Benefit { get; set; }
       public string Note { get; set; }
 
+      public override string ToString()
+      {
+         return $"{FirstName} {LastName}, {ContractType}\r\n" +
+                $"Start: {StartDate}, End: {TerminationDate}";
+      }
+
       public ContractType GetContractType()
       {
          ContractType result = Users.ContractType.Unknown;
@@ -48,6 +54,13 @@ namespace JiraReporterCore.Domain.Users
          }
 
          return result;
+      }
+
+      public bool IsEmployed(DateTime start, DateTime end)
+      {
+         bool isEmploymentTerminated = TerminationDate.HasValue && TerminationDate.Value <= start;
+         bool hasEmploymentStarted = StartDate.HasValue && StartDate.Value <= end;
+         return hasEmploymentStarted && !isEmploymentTerminated;
       }
    }
 }

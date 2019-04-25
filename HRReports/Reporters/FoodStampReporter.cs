@@ -17,27 +17,43 @@ namespace HRReports.Reporters
       private readonly UsersActiveInMonthReporter _usersActiveInMonthReporter;
       private readonly int _year;
       private readonly int _month;
+      private readonly int _previousYear;
+      private readonly int _previousMonth;
 
-      public FoodStampReporter(MonthWorkHoursReporter monthWorkHoursReporter, AbsenceReporter absenceReporter, UsersActiveInMonthReporter usersActiveInMonthReporter, int year, int month)
+      public FoodStampReporter(MonthWorkHoursReporter monthWorkHoursReporter, 
+                               AbsenceReporter absenceReporter, 
+                               UsersActiveInMonthReporter usersActiveInMonthReporter, 
+                               int year, 
+                               int month, 
+                               int previousYear, 
+                               int previousMonth)
       {
          _monthWorkHoursReporter = monthWorkHoursReporter;
          _absenceReporter = absenceReporter;
          _usersActiveInMonthReporter = usersActiveInMonthReporter;
          _year = year;
          _month = month;
+         _previousYear = previousYear;
+         _previousMonth = previousMonth;
       }
 
       protected override List<FoodStampData> CalculateReportData()
       {
          Logger.Info("Calculating food stamp data");
-         var entitledUsers = _usersActiveInMonthReporter.Report().Where(x => x.GetContractType() == ContractType.Employee);
+         
+         var entitledUsers = _usersActiveInMonthReporter.Report()
+            .Where(x => x.GetContractType() == ContractType.Employee);
+
          var monthWorkDays = _monthWorkHoursReporter.Report() / 8;
-         var absences = _absenceReporter.Report().Where(x => x.Date.Month == _month && x.Date.Year == _year).ToList();
+
+         var absences = _absenceReporter.Report()
+            .Where(x => x.Date.Month == _previousMonth && x.Date.Year == _previousYear)
+            .ToList();
 
          var result = entitledUsers.Select(x =>
          {
-            var absencesForAdjustment =
-               absences.Count(a => a.UserName == x.Login && a.Hours >= HoursForAbsenceAdjustment);
+            var absencesForAdjustment = absences.Count(a => a.UserName == x.Login 
+                                                            && a.Hours >= HoursForAbsenceAdjustment);
             return new FoodStampData
             {
                Month = _month,
