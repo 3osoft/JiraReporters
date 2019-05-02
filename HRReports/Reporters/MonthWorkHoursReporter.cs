@@ -27,17 +27,20 @@ namespace HRReports.Reporters
       {
          _holidayReporter = other._holidayReporter;
          _start = start;
-         _end = end;         
+         _end = end;
       }
 
       protected override int CalculateReportData()
       {
-         var startDate = _start ?? new DateTime(_year, _month, 1);
-         var endDate = _end ?? startDate.AddMonths(1).AddDays(-1);
+         DateTime startDate = _start ?? new DateTime(_year, _month, 1);
+         DateTime endDate = _end ?? startDate.AddMonths(1).AddDays(-1);
 
-         Logger.Info("Calculating work hours for month {0} in year {1}", _month, _year);
+         string message = _start != null
+            ? $"Calculating work hours from {_start} to {_end}"
+            : $"Calculating work hours for month {_month} in year {_year}";
+         Logger.Info(message);
 
-         var result = DateTimeUtils.EachDay(startDate, endDate)
+         int result = DateTimeUtils.EachDay(startDate, endDate)
             .Count(x => !DateTimeUtils.IsNonWorkingDay(_holidayReporter.Report(), x)) * HoursInWorkDay;
          Logger.Info("Found {0} working hours", result);
          return result;

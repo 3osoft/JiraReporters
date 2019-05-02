@@ -17,7 +17,11 @@ namespace HRReports.Reporters
       private readonly int _year;
       private readonly int _month;
 
-      public OvertimeReporter(AttendanceReporter attendanceReporter, UsersActiveInMonthReporter usersActiveInMonthReporter, MonthWorkHoursReporter workHoursReporter, int year, int month)
+      public OvertimeReporter(AttendanceReporter attendanceReporter, 
+                              UsersActiveInMonthReporter usersActiveInMonthReporter, 
+                              MonthWorkHoursReporter workHoursReporter, 
+                              int year, 
+                              int month)
       {
          _attendanceReporter = attendanceReporter;
          _usersActiveInMonthReporter = usersActiveInMonthReporter;
@@ -62,17 +66,30 @@ namespace HRReports.Reporters
       {
          int result = fullWorkHours;
 
-         if (user.TerminationDate.HasValue)
+         bool recalculateForStartDate = user.StartDate.HasValue &&
+                                        user.StartDate.Value.Year == _year 
+                                        && user.StartDate.Value.Month == _month
+                                        && user.StartDate.Value.Day > 1;
+
+         bool recalculateForTerminationDate = user.TerminationDate.HasValue
+                                              && user.TerminationDate.Value.Year == _year
+                                              && user.TerminationDate.Value.Month == _month;
+
+         if (recalculateForStartDate || recalculateForTerminationDate)
          {
-            DateTime terminationDate = user.TerminationDate.Value;
-            if (terminationDate.Year == _year && terminationDate.Month == _month)
-            {
-               MonthWorkHoursReporter userMonthWorkHoursReporter = new MonthWorkHoursReporter(
-                  _workHoursReporter,
-                  new DateTime(_year, _month, 1),
-                  terminationDate);
-               result = userMonthWorkHoursReporter.Report();
-            }
+            DateTime startDate = recalculateForStartDate 
+               ? user.StartDate.Value 
+               : new DateTime(_year, _month, 1);
+
+            DateTime terminationDate = recalculateForTerminationDate
+               ? user.TerminationDate.Value
+               : new DateTime(_year, _month, 1).AddMonths(1).AddDays(-1);
+
+            MonthWorkHoursReporter userMonthWorkHoursReporter = new MonthWorkHoursReporter(
+               _workHoursReporter,
+               startDate,
+               terminationDate);
+            result = userMonthWorkHoursReporter.Report();
          }
 
          return result;
