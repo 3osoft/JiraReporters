@@ -44,6 +44,12 @@
     "SheetName": "Sinners"
   },
 
+  "ProjectSheetSettings": {
+    "GoogleSheetId": "1DB_Kt0-BXPgOKmCRSqtjYTO-45GYe56jwGkpypKAwUg",
+    "SheetName": "Projects",
+    "Range": "A1"
+  },
+
   "PublicHolidayApiKey": "<ApiKey>",
 
   "MonthsToLog": "1"

@@ -232,6 +232,23 @@ namespace JiraReporterCore.JiraApi
          return result;
       }
 
+      public IEnumerable<JiraProject> GetJiraProjects()
+      {
+         RestRequest restRequest = CreateRequest("project", Method.GET);
+
+         IRestResponse<dynamic> restResponse = _restClient.Execute<dynamic>(restRequest);
+         restResponse.EnsureSuccessStatusCode();
+
+         var enumerable = restResponse.Data as IEnumerable<dynamic>;
+         return enumerable.Select(x => new JiraProject
+         {
+            Id = x.id,
+            Key = x.key,
+            Name = x.name,
+            Category = x.projectCategory?.name
+         });
+      }
+
       private dynamic GetAbsencePage(long startAt)
       {
          RestRequest restRequest = CreateRequest("search", Method.GET);

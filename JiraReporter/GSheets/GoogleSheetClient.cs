@@ -69,8 +69,13 @@ namespace JiraReporterCore.GSheets
 
       public void WriteToSheet(string sheetName, IList<IList<object>> data)
       {
+         WriteToSheetAtRange(sheetName, data, SHEET_START_RANGE);
+      }
+
+      public void WriteToSheetAtRange(string sheetName, IList<IList<object>> data, string range)
+      {
          SpreadsheetsResource.ValuesResource.AppendRequest request =
-            Service.Spreadsheets.Values.Append(new ValueRange() { Values = data }, SheetId, GetSheetAndRangeName(sheetName, SHEET_START_RANGE));
+            Service.Spreadsheets.Values.Append(new ValueRange() { Values = data }, SheetId, GetSheetAndRangeName(sheetName, range));
          request.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.OVERWRITE;
          request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
          var response = request.Execute();
@@ -124,9 +129,14 @@ namespace JiraReporterCore.GSheets
 
       public void ClearSheet(string sheetName)
       {
+         ClearSheetAtRange(sheetName, ALL_COLUMNS_RANGE);
+      }
+
+      public void ClearSheetAtRange(string sheetName, string range)
+      {
          ClearValuesRequest requestBody = new ClearValuesRequest();
 
-         SpreadsheetsResource.ValuesResource.ClearRequest clearRequest = Service.Spreadsheets.Values.Clear(requestBody, SheetId, GetSheetAndRangeName(sheetName, ALL_COLUMNS_RANGE));
+         SpreadsheetsResource.ValuesResource.ClearRequest clearRequest = Service.Spreadsheets.Values.Clear(requestBody, SheetId, GetSheetAndRangeName(sheetName, range));
          clearRequest.Execute();
       }
 

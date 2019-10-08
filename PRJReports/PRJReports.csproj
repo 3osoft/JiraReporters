@@ -150,6 +150,7 @@
     <Compile Include="Database\WorklogModel.cs" />
     <Compile Include="Gmail\ErrorNotificationGmail.cs" />
     <Compile Include="Gmail\SinnerGmail.cs" />
+    <Compile Include="GSheets\ProjectSheet.cs" />
     <Compile Include="GSheets\ProjectTimeSpentSheet.cs" />
     <Compile Include="GSheets\AttendanceGridSheet.cs" />
     <Compile Include="GSheets\SinnerSheet.cs" />

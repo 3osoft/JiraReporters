@@ -6,6 +6,7 @@ using System.Linq;
 using JiraReporterCore.Domain;
 using JiraReporterCore.GSheets;
 using JiraReporterCore.JiraApi;
+using JiraReporterCore.JiraApi.Models;
 using JiraReporterCore.Reporters;
 using JiraReporterCore.Reporters.Users;
 using JiraReporterCore.Reporters.Writer;
@@ -38,7 +39,6 @@ namespace PRJReports
             ErrorNotificationGmail errorNotificationGmail = new ErrorNotificationGmail(config.ErrorGmailSettings);
             errorNotificationGmail.Write(exception);
          };
-
          DateTime runStartDateTime = DateTime.Now;
          
          DateTime from = config.DateFrom ?? new DateTime(DateTime.Now.Year, 1, 1) ;
@@ -52,6 +52,11 @@ namespace PRJReports
          Logger.Info("Running for date range from {0} to {1}", from, till);
 
          JiraApiClient client = new JiraApiClient(config.JiraSettings);
+
+         JiraProjectReporter projectsReporter = new JiraProjectReporter(client);
+         var projectsWriter = new ReportWriter<List<JiraProject>>(projectsReporter, new ProjectSheet(config.ProjectSheetSettings));
+         projectsWriter.Write();
+
          var rawUserDataReporter = new RawUserDataReporter(new RawUserDataSheet(config.UsersSheetSettings));
          var freshestUserDataReporter = new FreshestUserDataReporter(rawUserDataReporter);
 

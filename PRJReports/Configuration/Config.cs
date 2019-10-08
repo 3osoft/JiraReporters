@@ -14,6 +14,7 @@ namespace PRJReports.Configuration
       public GoogleSheetsSettings ProjectTimeSpentSheetSettings { get; set; }
       public GoogleSheetsSettings RunLogSheetSettings { get; set; }
       public GoogleSheetsSettings SinnersSheetSettings { get; set; }
+      public GoogleSheetSettingsWithRange ProjectSheetSettings { get; set; }
       public string PublicHolidayApiKey { get; set; }
       public DateTime? DateFrom { get; set; }
       public DateTime? DateTo { get; set; }
