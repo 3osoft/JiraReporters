@@ -60,10 +60,8 @@ namespace HRReports.Reporters
                Year = _year,
                FirstName = x.FirstName,
                LastName = x.LastName,
-               Title = x.Title,
                FoodStampCountEntitlement = monthWorkDays,
-               AdjustmentForAbsences = absencesForAdjustment,
-               IssuesFoodStampCount = monthWorkDays - absencesForAdjustment
+               AdjustmentForAbsences = absencesForAdjustment
             };
          });
 

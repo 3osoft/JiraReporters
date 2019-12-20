@@ -6,16 +6,14 @@
       public int Year { get; set; }
       public string FirstName { get; set; }
       public string LastName { get; set; }
-      public string Title { get; set; }
       public int FoodStampCountEntitlement { get; set; }
       public int AdjustmentForAbsences { get; set; }
-      public int IssuesFoodStampCount { get; set; }
 
       public override string ToString()
       {
          return
             $"{Year}/{Month} {FirstName} {LastName}, " + 
-            $"{FoodStampCountEntitlement}-{AdjustmentForAbsences}={IssuesFoodStampCount}";
+            $"{FoodStampCountEntitlement}-{AdjustmentForAbsences}";
       }
    }
 }

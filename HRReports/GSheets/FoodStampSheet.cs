@@ -12,10 +12,8 @@ namespace HRReports.GSheets
          "Mesiac/Rok",
          "Meno",
          "Priezvisko",
-         "Titul",
          "Nárok (# prac. dní v mesiaci)",
-         "Úprava (strhnutie za absencie)",
-         "# vydaných lístkov"
+         "Úprava (strhnutie za absencie)"
       };
 
       public FoodStampSheet(GoogleSheetsSettings settings, string sheetPrefix) : base(settings, sheetPrefix)
@@ -40,10 +38,8 @@ namespace HRReports.GSheets
             $"{data.Month:D2}/{data.Year:D4}",
             data.FirstName,
             data.LastName,
-            data.Title,
             data.FoodStampCountEntitlement,
-            data.AdjustmentForAbsences,
-            data.IssuesFoodStampCount
+            data.AdjustmentForAbsences
          };
       }
    }
