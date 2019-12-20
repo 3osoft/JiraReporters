@@ -33,7 +33,7 @@ namespace JiraReporterCore.Reporters
          {
             //?api_key={apiKey}&country=SK&year={year}
 
-            var request = new RestRequest("calendar", Method.GET)
+            var request = new RestRequest("holidays", Method.GET)
             {
                JsonSerializer = new NewtonsoftJsonSerializer()
             };
