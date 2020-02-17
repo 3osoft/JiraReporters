@@ -106,7 +106,7 @@ namespace JiraReporterCore.JiraApi
             foreach (dynamic worklogJson in worklogJsons.worklogs)
             {
                DateTime startTime = worklogJson.started.Value;
-               string workLoggedByUserName = worklogJson.author.name.Value;
+               string workLoggedByUserName = worklogJson.author.displayName.Value;
                string workLoggedByUser = users.SingleOrDefault(x => x == workLoggedByUserName);
                if (startTime >= from && startTime <= till && workLoggedByUser != null)
                {
